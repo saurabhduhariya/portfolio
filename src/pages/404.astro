@@ -1,0 +1,25 @@
+---
+import ShellLayout from '@/layouts/ShellLayout.astro';
+---
+
+<ShellLayout
+  title="404: page not found"
+  description="This page does not exist."
+  command="cd ./missing-page"
+  noindex
+>
+  <p class="error">
+    <span aria-hidden="true">bash: cd: </span>No such file or directory.
+  </p>
+  <p>
+    The page you are looking for does not exist. Pick a section from the menu, or go back to{' '}
+    <a href="/">about.md</a>.
+  </p>
+</ShellLayout>
+
+<style>
+  .error {
+    margin-block-end: var(--space-4);
+    color: var(--color-danger);
+  }
+</style>
