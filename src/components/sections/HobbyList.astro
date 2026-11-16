@@ -1,0 +1,126 @@
+---
+// Hobbies as compact rows: name, a small frequency meter and a one-line description.
+import type { Hobby } from '@/data/types';
+
+interface Props {
+  hobbies: readonly Hobby[];
+}
+
+const { hobbies } = Astro.props;
+
+const SEGMENTS = 5;
+const filled: Record<Hobby['frequency'], number> = { daily: 5, often: 3, sometimes: 2 };
+---
+
+<ul class="hobbies" role="list">
+  {hobbies.map((hobby) => (
+    <li class:list={['hobby', `is-${hobby.frequency}`]}>
+      <p class="name">
+        {hobby.url ? (
+          <a href={hobby.url} target="_blank" rel="noreferrer">
+            {hobby.name}
+            <span class="visually-hidden">(opens in a new tab)</span>
+          </a>
+        ) : (
+          hobby.name
+        )}
+      </p>
+      <p class="frequency">
+        <span class="meter" aria-hidden="true">
+          {Array.from({ length: SEGMENTS }, (_, i) => (
+            <span class:list={['segment', { on: i < filled[hobby.frequency] }]} />
+          ))}
+        </span>
+        <span class="label">{hobby.frequency}</span>
+      </p>
+      <p class="description">{hobby.description}</p>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .hobbies {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .hobby {
+    --level-color: var(--color-text-muted);
+
+    display: grid;
+    grid-template-columns: 14ch 16ch minmax(0, 1fr);
+    gap: var(--space-4);
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--color-bg);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius);
+    transition: border-color var(--duration-fast) var(--ease-out);
+  }
+
+  .hobby:hover,
+  .hobby:focus-within {
+    border-color: var(--color-accent);
+  }
+
+  .is-daily {
+    --level-color: var(--color-success);
+  }
+
+  .is-often {
+    --level-color: var(--color-info);
+  }
+
+  .name {
+    font-weight: var(--weight-bold);
+    color: var(--color-text);
+  }
+
+  .name a {
+    color: var(--color-accent);
+  }
+
+  .frequency {
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+  }
+
+  .meter {
+    display: inline-flex;
+    gap: 2px;
+  }
+
+  .segment {
+    inline-size: 0.5rem;
+    block-size: 0.75rem;
+    background-color: var(--color-border);
+    border-radius: 1px;
+  }
+
+  .segment.on {
+    background-color: var(--level-color);
+  }
+
+  .label {
+    font-size: var(--text-sm);
+    color: var(--level-color);
+  }
+
+  .description {
+    color: var(--color-text-muted);
+  }
+
+  /* Narrow panes: name + meter on one line, description underneath. */
+  @media (max-width: 75rem) {
+    .hobby {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--space-1) var(--space-4);
+    }
+
+    .description {
+      grid-column: 1 / -1;
+      font-size: var(--text-sm);
+    }
+  }
+</style>

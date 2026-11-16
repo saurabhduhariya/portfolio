@@ -1,9 +1,9 @@
 ---
-import HobbyServices from '@/components/sections/HobbyServices.astro';
+import HobbyList from '@/components/sections/HobbyList.astro';
 import { hobbies } from '@/data/hobbies';
 import ShellLayout from '@/layouts/ShellLayout.astro';
 ---
 
 <ShellLayout navId="hobbies">
-  <HobbyServices hobbies={hobbies} />
+  <HobbyList hobbies={hobbies} />
 </ShellLayout>

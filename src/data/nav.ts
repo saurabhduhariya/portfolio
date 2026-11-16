@@ -53,7 +53,7 @@ export const navItems: NavItem[] = [
     label: 'hobbies/',
     path: '/hobbies/',
     kind: 'directory',
-    command: 'systemctl status hobbies',
+    command: 'ls -l hobbies/',
     title: 'Hobbies',
     description: 'What I do when I am not coding.',
   },

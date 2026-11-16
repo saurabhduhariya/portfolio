@@ -79,8 +79,8 @@ export interface Achievement {
 
 export interface Hobby {
   name: string;
-  /** Shown systemctl-style: active (running) / active (idle) / inactive (dead). */
-  status: 'active' | 'often' | 'rarely';
+  /** How often; drives the meter bar and the label. */
+  frequency: 'daily' | 'often' | 'sometimes';
   description: string;
   url?: string;
 }
@@ -94,4 +94,3 @@ export interface Contact {
   url: string;
   icon: ContactIcon;
 }
-

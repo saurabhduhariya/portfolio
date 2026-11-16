@@ -16,15 +16,4 @@ export const achievements: Achievement[] = [
     title: 'Solved 1000+ competitive programming problems',
     detail: ['Across LeetCode, Codeforces and other platforms.'],
   },
-  {
-    title: 'Hackathons I took part in',
-    detail: [
-      'Amazon ML Summer Challenge',
-      'Razorpay Buildathon',
-      'Agglomeration',
-      'Smart India Hackathon (SIH)',
-      'Cyberlabs AI Hackathon',
-      'The UI Strikes Back',
-    ],
-  },
 ];
