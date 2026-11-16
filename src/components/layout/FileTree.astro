@@ -1,0 +1,98 @@
+---
+import type { NavItem } from '@/data/types';
+
+interface Props {
+  items: readonly NavItem[];
+  currentId: string | undefined;
+}
+
+const { items, currentId } = Astro.props;
+const lastIndex = items.length - 1;
+---
+
+<nav class="file-tree" aria-label="Sections">
+  <p class="root" aria-hidden="true">
+    ~/
+  </p>
+  <ul role="list">
+    {items.map((item, index) => {
+      const isCurrent = item.id === currentId;
+      return (
+        <li>
+          <a
+            href={item.path}
+            class:list={['item', item.kind, { current: isCurrent }]}
+            aria-current={isCurrent ? 'page' : undefined}
+          >
+            <span class="branch" aria-hidden="true">
+              {index === lastIndex ? '└──' : '├──'}
+            </span>
+            <span class="label">{item.label}</span>
+            <span class="marker" aria-hidden="true">
+              ◂
+            </span>
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+</nav>
+
+<style>
+  .file-tree {
+    padding: var(--space-4);
+  }
+
+  .root {
+    margin-block-end: var(--space-1);
+    color: var(--color-info);
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    padding-inline-end: var(--space-2);
+    white-space: nowrap;
+    color: var(--color-text);
+    text-decoration: none;
+    border-radius: var(--radius);
+    transition:
+      background-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
+  }
+
+  .item.directory {
+    color: var(--color-info);
+  }
+
+  .branch {
+    margin-inline-end: var(--space-ch);
+    color: var(--color-text-faint);
+  }
+
+  .label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .marker {
+    margin-inline-start: auto;
+    padding-inline-start: var(--space-2);
+    visibility: hidden;
+  }
+
+  .item:hover {
+    color: var(--color-accent);
+    background-color: var(--color-surface-raised);
+  }
+
+  .item.current {
+    font-weight: var(--weight-bold);
+    color: var(--color-accent);
+    background-color: var(--color-surface-raised);
+  }
+
+  .item.current .marker {
+    visibility: visible;
+  }
+</style>

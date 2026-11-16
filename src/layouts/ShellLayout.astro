@@ -1,0 +1,168 @@
+---
+import '@fontsource-variable/jetbrains-mono';
+import fontLatinUrl from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
+import '@/styles/global.css';
+
+import Banner from '@/components/layout/Banner.astro';
+import FileTree from '@/components/layout/FileTree.astro';
+import MobileTabs from '@/components/layout/MobileTabs.astro';
+import PaneHeader from '@/components/layout/PaneHeader.astro';
+import StatusBar from '@/components/layout/StatusBar.astro';
+import { navItems } from '@/data/nav';
+import { profile } from '@/data/profile';
+import { findNavItem, navPosition } from '@/lib/nav';
+import { buildSeo, personJsonLd } from '@/lib/seo';
+
+interface Props {
+  /** Id from src/data/nav.ts. Omit for pages outside the nav (404). */
+  navId?: string;
+  /** Override the heading/title. Required when navId is omitted. */
+  title?: string;
+  description?: string;
+  /** Override the fake command in the pane header. */
+  command?: string;
+  noindex?: boolean;
+}
+
+// Meta tags cannot read CSS variables. Keep in sync with --color-bg in the active theme.
+const THEME_COLOR = '#1d2021';
+
+const { navId, title, description, command, noindex = false } = Astro.props;
+
+const current = findNavItem(navItems, navId);
+const heading = title ?? current?.title ?? 'Untitled';
+const isHome = current?.path === '/';
+const seo = buildSeo({
+  ...(isHome ? {} : { pageTitle: heading }),
+  description: description ?? current?.description ?? profile.tagline,
+  pathname: Astro.url.pathname,
+  site: Astro.site,
+  profile,
+});
+const fileLabel = current?.label ?? '[No Name]';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{seo.title}</title>
+    <meta name="description" content={seo.description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    {seo.canonical && !noindex && <link rel="canonical" href={seo.canonical} />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={seo.title} />
+    <meta property="og:description" content={seo.description} />
+    {seo.canonical && <meta property="og:url" content={seo.canonical} />}
+    <meta name="twitter:card" content="summary" />
+
+    <meta name="theme-color" content={THEME_COLOR} />
+    <link rel="icon" href="/favicon/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="preload" href={fontLatinUrl} as="font" type="font/woff2" crossorigin />
+
+    {isHome && <script type="application/ld+json" set:html={personJsonLd(profile, Astro.site)} />}
+  </head>
+  <body>
+    <a class="skip-link" href="#content">
+      Skip to content
+    </a>
+    <div class="shell">
+      <Banner name={profile.name} tagline={profile.tagline} />
+
+      <div class="mobile-only">
+        <MobileTabs items={navItems} currentId={current?.id} />
+      </div>
+
+      <div class="panes">
+        <aside class="pane sidebar desktop-only">
+          <FileTree items={navItems} currentId={current?.id} />
+        </aside>
+        <main id="content" class="pane content" tabindex="-1">
+          <PaneHeader
+            user={profile.handle}
+            host={profile.host}
+            command={command ?? current?.command ?? ''}
+            title={heading}
+          />
+          <slot />
+        </main>
+      </div>
+
+      <StatusBar
+        fileLabel={fileLabel}
+        position={navPosition(navItems, navId)}
+        total={navItems.length}
+      />
+    </div>
+  </body>
+</html>
+
+<style>
+  .shell {
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    /* minmax(0, …) stops wide children (the scrolling tab row) from stretching the page. */
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    min-block-size: 100dvh;
+    max-inline-size: var(--shell-max);
+    padding: 0 var(--shell-gutter) var(--shell-gutter);
+    margin-inline: auto;
+  }
+
+  .panes {
+    display: grid;
+    gap: var(--space-3);
+    min-block-size: 0;
+  }
+
+  .pane {
+    background-color: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius);
+  }
+
+  .content {
+    min-inline-size: 0;
+    padding: var(--space-6);
+  }
+
+  .content:focus {
+    outline: none;
+  }
+
+  .desktop-only {
+    display: none;
+  }
+
+  @media (min-width: 56.25rem) {
+    .shell {
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .mobile-only {
+      display: none;
+    }
+
+    .desktop-only {
+      display: block;
+    }
+
+    .panes {
+      grid-template-columns: minmax(var(--sidebar-min), var(--sidebar-max)) minmax(0, 1fr);
+    }
+
+    .content {
+      padding: var(--space-8);
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .content {
+      padding: var(--space-4);
+    }
+  }
+</style>

@@ -1,0 +1,60 @@
+---
+interface Props {
+  fileLabel: string;
+  position: number | undefined;
+  total: number;
+}
+
+const { fileLabel, position, total } = Astro.props;
+---
+
+<footer class="status-bar">
+  <span class="mode">NORMAL</span>
+  <span class="file">{fileLabel}</span>
+  <span class="meta">
+    <span class="encoding">utf-8</span>
+    {position !== undefined && <span class="position">{`${position}/${total}`}</span>}
+  </span>
+</footer>
+
+<style>
+  .status-bar {
+    display: flex;
+    align-items: stretch;
+    overflow: hidden;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    background-color: var(--color-surface-raised);
+    border-radius: var(--radius);
+  }
+
+  .status-bar > span {
+    padding: var(--space-1) var(--space-3);
+  }
+
+  .mode {
+    font-weight: var(--weight-bold);
+    color: var(--color-text-on-accent);
+    background-color: var(--color-accent);
+  }
+
+  .file {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--color-text);
+  }
+
+  .meta {
+    display: flex;
+    gap: var(--space-4);
+    margin-inline-start: auto;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 30rem) {
+    .encoding {
+      display: none;
+    }
+  }
+</style>
