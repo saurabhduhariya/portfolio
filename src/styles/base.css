@@ -14,6 +14,12 @@ html {
   text-size-adjust: 100%;
 }
 
+/* On project pages a horizontal swipe means "previous/next project" (scripts/navigation.ts),
+   so stop the browser's own overscroll back/forward navigation from firing as well. */
+html[data-project-pager] {
+  overscroll-behavior-x: none;
+}
+
 body {
   min-block-size: 100dvh;
   font-family: var(--font-mono);
@@ -117,7 +123,27 @@ kbd {
   transform: none;
 }
 
+/* Content pane swap between pages (see ShellLayout.astro). Opacity + transform only. */
+@keyframes pane-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes pane-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+
   *,
   *::before,
   *::after {

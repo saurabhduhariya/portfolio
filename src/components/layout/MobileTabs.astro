@@ -9,7 +9,9 @@ interface Props {
 const { items, currentId } = Astro.props;
 ---
 
-<nav class="mobile-tabs" aria-label="Sections">
+<!-- data-tabs-scroller: scripts/navigation.ts scrolls the current tab into view.
+     data-swipe-ignore: horizontal swipes here scroll the tabs, not change project. -->
+<nav class="mobile-tabs" aria-label="Sections" data-tabs-scroller data-swipe-ignore>
   <ul role="list">
     {items.map((item) => {
       const isCurrent = item.id === currentId;
@@ -30,6 +32,8 @@ const { items, currentId } = Astro.props;
 
 <style>
   .mobile-tabs {
+    /* offsetParent for the tabs, so scroll offsets are measured from here. */
+    position: relative;
     overflow-x: auto;
     scrollbar-width: none;
     border: var(--border-width) solid var(--color-border);
