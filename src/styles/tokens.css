@@ -11,7 +11,8 @@
   /* type */
   --font-mono:
     'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
-  --text-banner: clamp(2.5rem, 7vw, 5.5rem);
+  /* Scales with width AND height, so the banner never pushes the panes off a short screen. */
+  --text-banner: clamp(1.75rem, min(6vw, 8dvh), 4.5rem);
   --text-xl: 1.5rem;
   --text-lg: 1.125rem;
   --text-base: 1rem;

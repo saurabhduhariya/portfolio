@@ -54,7 +54,33 @@ document.addEventListener('keydown', (event) => {
   else link = sectionTarget(event.key);
 
   if (go(link)) event.preventDefault();
+  else scrollPane(event);
 });
+
+// The page never scrolls (single-screen layout), so scrolling keys pressed while focus is
+// outside the content pane scroll the pane instead. Inside the pane the browser does it natively.
+const LINE_STEP = 40; // px per arrow press, close to native
+
+function scrollPane(event: KeyboardEvent): void {
+  const pane = document.querySelector<HTMLElement>('[data-scroll-pane]');
+  if (!pane || (event.target instanceof Node && pane.contains(event.target))) return;
+  if (event.target instanceof HTMLButtonElement && event.key === ' ') return;
+
+  const page = pane.clientHeight * 0.9;
+  const deltas: Record<string, number> = {
+    ArrowDown: LINE_STEP,
+    ArrowUp: -LINE_STEP,
+    PageDown: page,
+    PageUp: -page,
+    ' ': event.shiftKey ? -page : page,
+  };
+
+  if (event.key === 'Home') pane.scrollTop = 0;
+  else if (event.key === 'End') pane.scrollTop = pane.scrollHeight;
+  else if (event.key in deltas) pane.scrollBy({ top: deltas[event.key] ?? 0 });
+  else return;
+  event.preventDefault();
+}
 
 let swipeStart: { x: number; y: number } | null = null;
 

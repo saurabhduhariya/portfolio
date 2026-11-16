@@ -136,16 +136,24 @@ const profileUrls = contacts
         <aside class="pane sidebar desktop-only">
           <FileTree items={navItems} currentId={current?.id} />
         </aside>
-        <main id="content" class="pane content" tabindex="-1">
-          <div transition:name="pane-body" transition:animate={paneAnimation}>
-            <PaneHeader
-              user={profile.handle}
-              host={profile.host}
-              command={command ?? current?.command ?? ''}
-              title={heading}
-            />
-            <slot />
-          </div>
+        <!-- tabindex="0": the pane can scroll, so keyboard users must be able to focus it. -->
+        <!-- The transition is on the pane box (not its content) so the fading snapshot is
+             clipped to the pane and never draws over the status bar. -->
+        <main
+          id="content"
+          class="pane content"
+          tabindex="0"
+          data-scroll-pane
+          transition:name="pane-body"
+          transition:animate={paneAnimation}
+        >
+          <PaneHeader
+            user={profile.handle}
+            host={profile.host}
+            command={command ?? current?.command ?? ''}
+            title={heading}
+          />
+          <slot />
         </main>
       </div>
 
@@ -165,13 +173,15 @@ const profileUrls = contacts
 </html>
 
 <style>
+  /* Exactly one screen tall: banner, panes and status bar always fit; the page never scrolls. */
   .shell {
     display: grid;
-    grid-template-rows: auto auto 1fr auto;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
     /* minmax(0, …) stops wide children (the scrolling tab row) from stretching the page. */
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-3);
-    min-block-size: 100dvh;
+    block-size: 100vh;
+    block-size: 100dvh;
     max-inline-size: var(--shell-max);
     padding: 0 var(--shell-gutter) var(--shell-gutter);
     margin-inline: auto;
@@ -179,23 +189,41 @@ const profileUrls = contacts
 
   .panes {
     display: grid;
+    grid-template-rows: minmax(0, 1fr);
     gap: var(--space-3);
     min-block-size: 0;
   }
 
   .pane {
+    min-block-size: 0;
     background-color: var(--color-surface);
     border: var(--border-width) solid var(--color-border);
     border-radius: var(--radius);
   }
 
+  /* If a section is taller than the screen, it scrolls inside the pane, never the page. */
+  .content,
+  .sidebar {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+
+  /* position: relative keeps absolutely positioned children (e.g. .visually-hidden labels)
+     inside the scrolling pane; otherwise they stretch the page and make it scroll. */
   .content {
+    position: relative;
     min-inline-size: 0;
     padding: var(--space-6);
   }
 
-  .content:focus {
+  .content:focus:not(:focus-visible) {
     outline: none;
+  }
+
+  .content:focus-visible {
+    outline-offset: calc(var(--focus-width) * -1);
   }
 
   .desktop-only {
@@ -224,7 +252,11 @@ const profileUrls = contacts
     }
   }
 
-  @media (max-width: 30rem) {
+  @media (max-width: 30rem), (max-height: 40rem) {
+    .shell {
+      gap: var(--space-2);
+    }
+
     .content {
       padding: var(--space-4);
     }

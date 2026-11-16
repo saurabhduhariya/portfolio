@@ -44,7 +44,7 @@ function dirName(title: string): string {
 <style>
   .skills {
     display: grid;
-    gap: var(--space-8);
+    gap: var(--space-6);
   }
 
   .dir {
@@ -53,9 +53,10 @@ function dirName(title: string): string {
     color: var(--color-info);
   }
 
+  /* Wrapping chips instead of a fixed grid: 38 skills fit in a few rows per group. */
   .items {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--space-2);
   }
 
@@ -63,7 +64,8 @@ function dirName(title: string): string {
     display: flex;
     gap: var(--space-2);
     align-items: center;
-    padding: var(--space-2) var(--space-3);
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--text-sm);
     color: var(--color-text);
     background-color: var(--color-bg);
     border: var(--border-width) solid var(--color-border);
@@ -90,11 +92,5 @@ function dirName(title: string): string {
     inline-size: 1em;
     text-align: center;
     color: var(--color-text-faint);
-  }
-
-  @media (max-width: 30rem) {
-    .items {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
   }
 </style>

@@ -20,8 +20,15 @@ html[data-project-pager] {
   overscroll-behavior-x: none;
 }
 
+/* Single-screen layout: the page itself never scrolls. The shell fills the viewport and only
+   the content pane scrolls inside its box when a section is taller than the screen. */
+html,
 body {
-  min-block-size: 100dvh;
+  block-size: 100%;
+  overflow: hidden;
+}
+
+body {
   font-family: var(--font-mono);
   font-size: var(--text-base);
   font-weight: var(--weight-regular);
