@@ -35,8 +35,8 @@ export interface Profile {
     degree: string;
     coursework: string[];
   };
-  /** Path under public/. The link only renders if the file exists at build time. */
-  resumePath: string;
+  /** Public Google Drive "view" link to the resume PDF. */
+  resumeUrl: string;
 }
 
 export interface SkillGroup {

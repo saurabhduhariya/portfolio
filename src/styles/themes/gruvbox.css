@@ -8,6 +8,7 @@
   --gruvbox-bg1: #3c3836;
   --gruvbox-bg2: #504945;
   --gruvbox-fg1: #ebdbb2;
+  --gruvbox-fg3: #bdae93;
   --gruvbox-fg4: #a89984;
   --gruvbox-gray: #928374;
   --gruvbox-yellow: #fabd2f;
@@ -24,6 +25,8 @@
   --color-border: var(--gruvbox-bg2);
   --color-text: var(--gruvbox-fg1);
   --color-text-muted: var(--gruvbox-fg4);
+  /* Muted text on --color-surface-raised (fg4 there is only 4.17:1; fg3 is 5.3:1). */
+  --color-text-muted-raised: var(--gruvbox-fg3);
   --color-text-faint: var(--gruvbox-gray);
   --color-text-on-accent: var(--gruvbox-bg0-h);
   --color-accent: var(--gruvbox-yellow);

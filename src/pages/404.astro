@@ -9,7 +9,10 @@ import ShellLayout from '@/layouts/ShellLayout.astro';
   noindex
 >
   <p class="error">
-    <span aria-hidden="true">bash: cd: </span>No such file or directory.
+    <span class="prefix" aria-hidden="true">
+      bash: cd:
+    </span>{' '}
+    No such file or directory.
   </p>
   <p>
     The page you are looking for does not exist. Pick a section from the menu, or go back to{' '}
@@ -18,8 +21,14 @@ import ShellLayout from '@/layouts/ShellLayout.astro';
 </ShellLayout>
 
 <style>
+  /* Gruvbox red (--color-danger) is only 4.28:1 on --color-surface, below WCAG AA, so the
+     shell-error prefix uses orange (5.8:1) and the message uses body text. */
   .error {
     margin-block-end: var(--space-4);
-    color: var(--color-danger);
+    font-weight: var(--weight-bold);
+  }
+
+  .prefix {
+    color: var(--color-accent-strong);
   }
 </style>

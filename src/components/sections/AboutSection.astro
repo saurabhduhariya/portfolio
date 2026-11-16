@@ -1,16 +1,14 @@
 ---
-import Download from '@lucide/astro/icons/download';
+import FileText from '@lucide/astro/icons/file-text';
 import SectionLabel from '@/components/ui/SectionLabel.astro';
 import TagList from '@/components/ui/TagList.astro';
 import type { Profile } from '@/data/types';
 
 interface Props {
   profile: Profile;
-  /** Only link the resume when the PDF is actually in public/. */
-  resumeAvailable: boolean;
 }
 
-const { profile, resumeAvailable } = Astro.props;
+const { profile } = Astro.props;
 const fetchTitle = `${profile.handle}@${profile.host}`;
 ---
 
@@ -21,12 +19,11 @@ const fetchTitle = `${profile.handle}@${profile.host}`;
     ))}
 
     <div class="actions">
-      {resumeAvailable && (
-        <a class="button primary" href={profile.resumePath} download>
-          <Download size="1em" aria-hidden="true" />
-          Download resume
-        </a>
-      )}
+      <a class="button primary" href={profile.resumeUrl} target="_blank" rel="noreferrer">
+        <FileText size="1em" aria-hidden="true" />
+        View resume
+        <span class="visually-hidden">(Google Drive, opens in a new tab)</span>
+      </a>
       <a class="button" href="/projects/">
         See my projects <span aria-hidden="true">→</span>
       </a>

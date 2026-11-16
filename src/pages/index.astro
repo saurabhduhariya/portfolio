@@ -2,9 +2,8 @@
 import AboutSection from '@/components/sections/AboutSection.astro';
 import { profile } from '@/data/profile';
 import ShellLayout from '@/layouts/ShellLayout.astro';
-import { publicFileExists } from '@/lib/files';
 ---
 
 <ShellLayout navId="about">
-  <AboutSection profile={profile} resumeAvailable={publicFileExists(profile.resumePath)} />
+  <AboutSection profile={profile} />
 </ShellLayout>
