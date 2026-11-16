@@ -1,0 +1,68 @@
+import type { NavItem } from './types';
+
+// Order here is the order in the file tree and for j/k navigation.
+export const navItems: NavItem[] = [
+  {
+    id: 'about',
+    label: 'about.md',
+    path: '/',
+    kind: 'file',
+    command: 'cat about.md',
+    title: 'About me',
+    description: 'Who I am, what I study and what I like to build.',
+  },
+  {
+    id: 'skills',
+    label: 'skills/',
+    path: '/skills/',
+    kind: 'directory',
+    command: 'ls skills/',
+    title: 'Skills',
+    description: 'Languages, frameworks and tools I work with.',
+  },
+  {
+    id: 'projects',
+    label: 'projects/',
+    path: '/projects/',
+    kind: 'directory',
+    command: 'ls projects/',
+    title: 'Projects',
+    description: 'Things I have built, with links to code and live demos.',
+  },
+  {
+    id: 'experience',
+    label: 'experience.log',
+    path: '/experience/',
+    kind: 'file',
+    command: 'git log --oneline',
+    title: 'Experience',
+    description: 'Internships, hackathons and open-source work.',
+  },
+  {
+    id: 'hobbies',
+    label: 'hobbies/',
+    path: '/hobbies/',
+    kind: 'directory',
+    command: 'systemctl status hobbies',
+    title: 'Hobbies',
+    description: 'What I do when I am not coding.',
+  },
+  {
+    id: 'contact',
+    label: 'contact/',
+    path: '/contact/',
+    kind: 'directory',
+    command: 'cat contact.txt',
+    title: 'Get in touch',
+    description: 'Where to find me and how to reach me.',
+  },
+  {
+    id: 'credits',
+    label: 'credits',
+    path: '/credits/',
+    kind: 'file',
+    command: 'cat credits',
+    title: 'Credits',
+    description: 'Tools, fonts and the site that inspired this one.',
+  },
+];

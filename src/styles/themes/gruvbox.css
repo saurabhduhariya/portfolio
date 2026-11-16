@@ -1,0 +1,38 @@
+/*
+ * Gruvbox Dark. Raw palette first, then the semantic tokens components use.
+ * Components must only use the semantic --color-* names.
+ */
+:root {
+  --gruvbox-bg0-h: #1d2021;
+  --gruvbox-bg0: #282828;
+  --gruvbox-bg1: #3c3836;
+  --gruvbox-bg2: #504945;
+  --gruvbox-fg1: #ebdbb2;
+  --gruvbox-fg4: #a89984;
+  --gruvbox-gray: #928374;
+  --gruvbox-yellow: #fabd2f;
+  --gruvbox-orange: #fe8019;
+  --gruvbox-green: #b8bb26;
+  --gruvbox-aqua: #8ec07c;
+  --gruvbox-blue: #83a598;
+  --gruvbox-purple: #d3869b;
+  --gruvbox-red: #fb4934;
+
+  --color-bg: var(--gruvbox-bg0-h);
+  --color-surface: var(--gruvbox-bg0);
+  --color-surface-raised: var(--gruvbox-bg1);
+  --color-border: var(--gruvbox-bg2);
+  --color-text: var(--gruvbox-fg1);
+  --color-text-muted: var(--gruvbox-fg4);
+  --color-text-faint: var(--gruvbox-gray);
+  --color-text-on-accent: var(--gruvbox-bg0-h);
+  --color-accent: var(--gruvbox-yellow);
+  --color-accent-strong: var(--gruvbox-orange);
+  --color-success: var(--gruvbox-green);
+  --color-info: var(--gruvbox-aqua);
+  --color-link-visited: var(--gruvbox-blue);
+  --color-tag: var(--gruvbox-purple);
+  --color-danger: var(--gruvbox-red);
+
+  color-scheme: dark;
+}
