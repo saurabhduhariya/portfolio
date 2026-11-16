@@ -1,0 +1,19 @@
+{
+  "name": "Saurabh Prajapat",
+  "short_name": "Saurabh",
+  "description": "CS undergrad @ IIT (ISM) Dhanbad · developer tools & AI agents",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#1d2021",
+  "theme_color": "#1d2021",
+  "icons": [
+    { "src": "/favicon/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/favicon/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    {
+      "src": "/favicon/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
