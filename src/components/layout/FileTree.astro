@@ -22,6 +22,7 @@ const lastIndex = items.length - 1;
           <a
             href={item.path}
             class:list={['item', item.kind, { current: isCurrent }]}
+            data-nav-order={index + 1}
             aria-current={isCurrent ? 'page' : undefined}
           >
             <span class="branch" aria-hidden="true">

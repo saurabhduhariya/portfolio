@@ -7,7 +7,8 @@ import Banner from '@/components/layout/Banner.astro';
 import FileTree from '@/components/layout/FileTree.astro';
 import MobileTabs from '@/components/layout/MobileTabs.astro';
 import PaneHeader from '@/components/layout/PaneHeader.astro';
-import StatusBar from '@/components/layout/StatusBar.astro';
+import StatusBar, { type KeyHint } from '@/components/layout/StatusBar.astro';
+import { ClientRouter } from 'astro:transitions';
 import { contacts } from '@/data/contacts';
 import { navItems } from '@/data/nav';
 import { profile } from '@/data/profile';
@@ -24,6 +25,8 @@ interface Props {
   command?: string;
   /** Override the file name in the status bar, e.g. "projects/switchyard.md". */
   fileLabel?: string;
+  /** Page has rel="prev"/"next" project links, so show the h/l key hint. */
+  projectPager?: boolean;
   noindex?: boolean;
 }
 
@@ -36,8 +39,39 @@ const {
   description,
   command,
   fileLabel: fileLabelOverride,
+  projectPager = false,
   noindex = false,
 } = Astro.props;
+
+const keyHints: KeyHint[] = [
+  { keys: ['j', 'k'], label: 'section' },
+  { keys: [`1-${navItems.length}`], label: 'jump' },
+  ...(projectPager ? [{ keys: ['h', 'l'], label: 'project' }] : []),
+];
+
+// Only the content pane animates between pages; the banner, file tree and status bar swap
+// instantly so the "terminal" feels fixed. Keyframes live in styles/base.css. Durations
+// mirror --duration-fast / --duration-base (JS cannot read CSS variables here).
+const paneAnimation = {
+  forwards: {
+    old: { name: 'pane-out', duration: '120ms', easing: 'ease-in', fillMode: 'both' },
+    new: {
+      name: 'pane-in',
+      duration: '200ms',
+      easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
+      fillMode: 'both',
+    },
+  },
+  backwards: {
+    old: { name: 'pane-out', duration: '120ms', easing: 'ease-in', fillMode: 'both' },
+    new: {
+      name: 'pane-in',
+      duration: '200ms',
+      easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
+      fillMode: 'both',
+    },
+  },
+};
 
 const current = findNavItem(navItems, navId);
 const heading = title ?? current?.title ?? 'Untitled';
@@ -56,7 +90,7 @@ const profileUrls = contacts
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" transition:animate="none" data-project-pager={projectPager ? '' : undefined}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -75,6 +109,7 @@ const profileUrls = contacts
     <link rel="icon" href="/favicon/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="preload" href={fontLatinUrl} as="font" type="font/woff2" crossorigin />
+    <ClientRouter />
 
     {isHome && (
       <script
@@ -99,13 +134,15 @@ const profileUrls = contacts
           <FileTree items={navItems} currentId={current?.id} />
         </aside>
         <main id="content" class="pane content" tabindex="-1">
-          <PaneHeader
-            user={profile.handle}
-            host={profile.host}
-            command={command ?? current?.command ?? ''}
-            title={heading}
-          />
-          <slot />
+          <div transition:name="pane-body" transition:animate={paneAnimation}>
+            <PaneHeader
+              user={profile.handle}
+              host={profile.host}
+              command={command ?? current?.command ?? ''}
+              title={heading}
+            />
+            <slot />
+          </div>
         </main>
       </div>
 
@@ -113,8 +150,14 @@ const profileUrls = contacts
         fileLabel={fileLabel}
         position={navPosition(navItems, navId)}
         total={navItems.length}
+        hints={keyHints}
       />
     </div>
+
+    <script>
+      import '@/scripts/navigation';
+      import '@/scripts/clock';
+    </script>
   </body>
 </html>
 

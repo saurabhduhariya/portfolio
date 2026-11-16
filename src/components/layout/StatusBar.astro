@@ -1,19 +1,36 @@
 ---
+export interface KeyHint {
+  keys: string[];
+  label: string;
+}
+
 interface Props {
   fileLabel: string;
   position: number | undefined;
   total: number;
+  hints: readonly KeyHint[];
 }
 
-const { fileLabel, position, total } = Astro.props;
+const { fileLabel, position, total, hints } = Astro.props;
 ---
 
 <footer class="status-bar">
   <span class="mode">NORMAL</span>
   <span class="file">{fileLabel}</span>
+  <span class="hints" aria-hidden="true">
+    {hints.map((hint) => (
+      <span class="hint">
+        {hint.keys.map((key) => (
+          <kbd>{key}</kbd>
+        ))}
+        <span class="hint-label">{hint.label}</span>
+      </span>
+    ))}
+  </span>
   <span class="meta">
     <span class="encoding">utf-8</span>
     {position !== undefined && <span class="position">{`${position}/${total}`}</span>}
+    <time class="clock" data-clock hidden></time>
   </span>
 </footer>
 
@@ -45,11 +62,44 @@ const { fileLabel, position, total } = Astro.props;
     color: var(--color-text);
   }
 
+  /* Key hints only make sense with a keyboard; hidden on touch-only devices and small screens. */
+  .hints {
+    display: none;
+    gap: var(--space-4);
+    align-items: center;
+    white-space: nowrap;
+  }
+
+  .hint {
+    display: inline-flex;
+    gap: var(--space-1);
+    align-items: center;
+  }
+
+  .hint kbd {
+    color: var(--color-text);
+    background-color: var(--color-surface);
+  }
+
+  .hint-label {
+    margin-inline-start: var(--space-1);
+  }
+
   .meta {
     display: flex;
     gap: var(--space-4);
     margin-inline-start: auto;
     white-space: nowrap;
+  }
+
+  .clock {
+    color: var(--color-text);
+  }
+
+  @media (min-width: 56.25rem) and (hover: hover) and (pointer: fine) {
+    .hints {
+      display: flex;
+    }
   }
 
   @media (max-width: 30rem) {
