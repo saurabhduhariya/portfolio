@@ -15,13 +15,12 @@ export const skillGroups: SkillGroup[] = [
     ],
   },
   {
-    title: 'AI/ML & Data Science',
+    title: 'AI / ML',
     items: [
       { name: 'NumPy', icon: 'numpy' },
       { name: 'Pandas', icon: 'pandas' },
       { name: 'Scikit-learn', icon: 'scikitlearn' },
       { name: 'Matplotlib' },
-      { name: 'Seaborn' },
       { name: 'TensorFlow', icon: 'tensorflow' },
       { name: 'PyTorch', icon: 'pytorch' },
       { name: 'LangChain', icon: 'langchain' },
@@ -41,7 +40,6 @@ export const skillGroups: SkillGroup[] = [
       { name: 'Tailwind CSS', icon: 'tailwindcss' },
       { name: 'REST' },
       { name: 'WebSockets' },
-      { name: 'Server-Sent Events' },
     ],
   },
   {

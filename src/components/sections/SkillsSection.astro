@@ -1,6 +1,8 @@
 ---
+// Skills as a compact two-column table: group label on the left, wrapping chips on the right.
+// Each group is one or two lines tall, so the whole list fits on a laptop screen without
+// scrolling. Each group has one theme colour for its label and icons.
 import BrandIcon from '@/components/ui/BrandIcon.astro';
-import SectionLabel from '@/components/ui/SectionLabel.astro';
 import type { SkillGroup } from '@/data/types';
 
 interface Props {
@@ -9,30 +11,27 @@ interface Props {
 
 const { groups } = Astro.props;
 
-function dirName(title: string): string {
-  return `${title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')}/`;
-}
+// Semantic theme tokens, cycled per group. All pass WCAG AA on --color-surface.
+const tones = ['accent', 'info', 'success', 'tag', 'accent-strong'] as const;
 ---
 
 <div class="skills">
-  {groups.map((group) => (
-    <section class="group">
-      <SectionLabel>
-        {group.title} <span class="dir">{dirName(group.title)}</span>
-      </SectionLabel>
+  {groups.map((group, index) => (
+    <section
+      class="group"
+      style={`--tone: var(--color-${tones[index % tones.length]})`}
+      aria-labelledby={`skills-${index}`}
+    >
+      <h2 id={`skills-${index}`} class="label">
+        <span class="marker" aria-hidden="true">
+          ▸
+        </span>
+        {group.title}
+      </h2>
       <ul class="items" role="list">
         {group.items.map((item) => (
           <li class="item">
-            {item.icon ? (
-              <BrandIcon slug={item.icon} />
-            ) : (
-              <span class="bullet" aria-hidden="true">
-                ›
-              </span>
-            )}
+            {item.icon && <BrandIcon slug={item.icon} />}
             <span>{item.name}</span>
           </li>
         ))}
@@ -42,18 +41,47 @@ function dirName(title: string): string {
 </div>
 
 <style>
+  /* Container query: the layout follows the pane's width, not the window's. */
   .skills {
     display: grid;
-    gap: var(--space-6);
+    container-type: inline-size;
   }
 
-  .dir {
+  .group {
+    display: grid;
+    grid-template-columns: 10rem minmax(0, 1fr);
+    gap: var(--space-4);
+    align-items: start;
+    padding-block: var(--space-3);
+    border-block-end: var(--border-width) dashed var(--color-border);
+  }
+
+  .group:first-child {
+    padding-block-start: 0;
+  }
+
+  .group:last-child {
+    border-block-end: 0;
+  }
+
+  .label {
+    display: flex;
+    gap: var(--space-2);
+    align-items: baseline;
+    padding-block-start: var(--space-1);
     font-size: var(--text-sm);
-    font-weight: var(--weight-regular);
-    color: var(--color-info);
+    font-weight: var(--weight-bold);
+    color: var(--tone);
   }
 
-  /* Wrapping chips instead of a fixed grid: 38 skills fit in a few rows per group. */
+  .marker {
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+
+  .group:hover .marker {
+    transform: translateX(2px);
+  }
+
   .items {
     display: flex;
     flex-wrap: wrap;
@@ -61,36 +89,36 @@ function dirName(title: string): string {
   }
 
   .item {
-    display: flex;
+    display: inline-flex;
     gap: var(--space-2);
     align-items: center;
-    padding: var(--space-1) var(--space-3);
+    padding: var(--space-1) var(--space-2);
     font-size: var(--text-sm);
+    line-height: var(--leading-tight);
     color: var(--color-text);
     background-color: var(--color-bg);
     border: var(--border-width) solid var(--color-border);
     border-radius: var(--radius);
-    transition:
-      border-color var(--duration-fast) var(--ease-out),
-      color var(--duration-fast) var(--ease-out);
+    transition: border-color var(--duration-fast) var(--ease-out);
   }
 
   .item :global(.brand-icon) {
-    color: var(--color-text-muted);
-    transition: color var(--duration-fast) var(--ease-out);
+    color: var(--tone);
   }
 
   .item:hover {
-    border-color: var(--color-accent);
+    border-color: var(--tone);
   }
 
-  .item:hover :global(.brand-icon) {
-    color: var(--color-accent);
-  }
+  /* Narrow panes: label above its chips. */
+  @container (max-width: 34rem) {
+    .group {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-2);
+    }
 
-  .bullet {
-    inline-size: 1em;
-    text-align: center;
-    color: var(--color-text-faint);
+    .label {
+      padding-block-start: 0;
+    }
   }
 </style>
