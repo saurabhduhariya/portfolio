@@ -57,13 +57,4 @@ export const navItems: NavItem[] = [
     title: 'Get in touch',
     description: 'Email, GitHub and LinkedIn.',
   },
-  {
-    id: 'credits',
-    label: 'credits',
-    path: '/credits/',
-    kind: 'file',
-    command: 'cat credits',
-    title: 'Credits',
-    description: 'Tools, fonts and the site that inspired this one.',
-  },
 ];

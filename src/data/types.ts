@@ -90,8 +90,3 @@ export interface Contact {
   icon: ContactIcon;
 }
 
-export interface Credit {
-  name: string;
-  url: string;
-  note: string;
-}
