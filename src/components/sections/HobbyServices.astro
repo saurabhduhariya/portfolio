@@ -1,0 +1,99 @@
+---
+// Hobbies rendered like `systemctl status`.
+import type { Hobby } from '@/data/types';
+
+interface Props {
+  hobbies: readonly Hobby[];
+}
+
+const { hobbies } = Astro.props;
+
+const stateText: Record<Hobby['status'], string> = {
+  active: 'active (running)',
+  often: 'active (idle)',
+  rarely: 'inactive (dead)',
+};
+---
+
+<ul class="services" role="list">
+  {hobbies.map((hobby) => (
+    <li class:list={['service', `is-${hobby.status}`]}>
+      <p class="unit">
+        <span class="dot" aria-hidden="true">
+          ●
+        </span>
+        {hobby.url ? (
+          <a href={hobby.url} target="_blank" rel="noreferrer" class="name">
+            {hobby.name}.service
+          </a>
+        ) : (
+          <span class="name">{hobby.name}.service</span>
+        )}
+        <span class="description">- {hobby.description}</span>
+      </p>
+      <p class="state-line">
+        <span class="key">Active:</span>
+        <span class="state">{stateText[hobby.status]}</span>
+      </p>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .services {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .service {
+    --status-color: var(--color-success);
+
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--color-bg);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius);
+  }
+
+  .is-often {
+    --status-color: var(--color-info);
+  }
+
+  .is-rarely {
+    --status-color: var(--color-danger);
+  }
+
+  .unit,
+  .state-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-ch);
+    max-inline-size: none;
+  }
+
+  .dot,
+  .state {
+    font-weight: var(--weight-bold);
+    color: var(--status-color);
+  }
+
+  .name {
+    font-weight: var(--weight-bold);
+    color: var(--color-text);
+  }
+
+  a.name {
+    color: var(--color-accent);
+  }
+
+  .description {
+    color: var(--color-text-muted);
+  }
+
+  .state-line {
+    padding-inline-start: 2ch;
+  }
+
+  .key {
+    color: var(--color-text-muted);
+  }
+</style>

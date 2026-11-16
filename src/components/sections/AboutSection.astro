@@ -1,0 +1,195 @@
+---
+import Download from '@lucide/astro/icons/download';
+import SectionLabel from '@/components/ui/SectionLabel.astro';
+import TagList from '@/components/ui/TagList.astro';
+import type { Profile } from '@/data/types';
+
+interface Props {
+  profile: Profile;
+  /** Only link the resume when the PDF is actually in public/. */
+  resumeAvailable: boolean;
+}
+
+const { profile, resumeAvailable } = Astro.props;
+const fetchTitle = `${profile.handle}@${profile.host}`;
+---
+
+<div class="about">
+  <div class="bio">
+    {profile.bio.map((paragraph) => (
+      <p>{paragraph}</p>
+    ))}
+
+    <div class="actions">
+      {resumeAvailable && (
+        <a class="button primary" href={profile.resumePath} download>
+          <Download size="1em" aria-hidden="true" />
+          Download resume
+        </a>
+      )}
+      <a class="button" href="/projects/">
+        See my projects <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+
+  <section class="fetch" aria-labelledby="facts-heading">
+    <h2 id="facts-heading" class="fetch-title">
+      {fetchTitle}
+    </h2>
+    <p class="fetch-rule" aria-hidden="true">
+      {'-'.repeat(fetchTitle.length)}
+    </p>
+    <dl>
+      {profile.quickFacts.map((fact) => (
+        <div class="fact">
+          <dt>{fact.label}</dt>
+          <dd>{fact.value}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+
+  <section class="education" aria-labelledby="education-heading">
+    <SectionLabel id="education-heading">Education</SectionLabel>
+    <p class="school">
+      <a href={profile.education.schoolUrl} target="_blank" rel="noreferrer">
+        {profile.education.school}
+      </a>
+    </p>
+    <p class="degree">{profile.education.degree}</p>
+    <p class="coursework-label">Relevant coursework</p>
+    <TagList items={profile.education.coursework} label="Relevant coursework" />
+  </section>
+</div>
+
+<style>
+  .about {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+  }
+
+  .bio {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-block-start: var(--space-2);
+  }
+
+  .button {
+    display: inline-flex;
+    gap: var(--space-2);
+    align-items: center;
+    padding: var(--space-2) var(--space-4);
+    color: var(--color-text);
+    text-decoration: none;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius);
+    transition:
+      border-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
+  }
+
+  .button:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .button.primary {
+    font-weight: var(--weight-bold);
+    color: var(--color-text-on-accent);
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .button.primary:hover {
+    color: var(--color-text-on-accent);
+    background-color: var(--color-accent-strong);
+    border-color: var(--color-accent-strong);
+  }
+
+  .fetch {
+    padding: var(--space-4) var(--space-6);
+    background-color: var(--color-bg);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius);
+  }
+
+  .fetch-title {
+    font-size: var(--text-base);
+    font-weight: var(--weight-bold);
+    color: var(--color-success);
+  }
+
+  .fetch-rule {
+    color: var(--color-text-faint);
+  }
+
+  .fact {
+    display: grid;
+    grid-template-columns: 11ch minmax(0, 1fr);
+    gap: var(--space-ch);
+  }
+
+  dt {
+    font-weight: var(--weight-bold);
+    color: var(--color-info);
+  }
+
+  dt::after {
+    content: ':';
+    color: var(--color-text-muted);
+  }
+
+  dd {
+    margin: 0;
+  }
+
+  .education {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .school {
+    font-weight: var(--weight-semibold);
+  }
+
+  .degree,
+  .coursework-label {
+    color: var(--color-text-muted);
+  }
+
+  .coursework-label {
+    margin-block-start: var(--space-2);
+    font-size: var(--text-sm);
+  }
+
+  @media (min-width: 75rem) {
+    .about {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
+      align-items: start;
+    }
+
+    .education {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .fetch {
+      padding: var(--space-3) var(--space-4);
+    }
+
+    .fact {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+      margin-block-end: var(--space-2);
+    }
+  }
+</style>

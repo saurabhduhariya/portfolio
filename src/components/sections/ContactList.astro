@@ -1,0 +1,114 @@
+---
+import ContactIcon from '@/components/ui/ContactIcon.astro';
+import type { Contact } from '@/data/types';
+
+interface Props {
+  intro: string;
+  contacts: readonly Contact[];
+}
+
+const { intro, contacts } = Astro.props;
+---
+
+<div class="contact">
+  <p>{intro}</p>
+  <ul class="list" role="list">
+    {contacts.map((contact) => {
+      const isExternal = contact.url.startsWith('https://');
+      return (
+        <li>
+          <a
+            class="row"
+            href={contact.url}
+            {...(isExternal ? { target: '_blank', rel: 'noreferrer' } : {})}
+          >
+            <span class="icon">
+              <ContactIcon icon={contact.icon} />
+            </span>
+            <span class="label">{contact.label}</span>
+            <span class="arrow" aria-hidden="true">
+              →
+            </span>
+            <span class="handle">{contact.handle}</span>
+            {isExternal && <span class="visually-hidden">(opens in a new tab)</span>}
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+</div>
+
+<style>
+  .contact {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .list {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1.5em 9ch 2ch minmax(0, 1fr);
+    gap: var(--space-2);
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    color: var(--color-text);
+    text-decoration: none;
+    background-color: var(--color-bg);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius);
+    transition:
+      border-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
+  }
+
+  .row:hover {
+    color: var(--color-text);
+    border-color: var(--color-accent);
+  }
+
+  .icon {
+    display: grid;
+    place-items: center;
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+  }
+
+  .row:hover .icon,
+  .row:hover .handle {
+    color: var(--color-accent);
+  }
+
+  .label {
+    font-weight: var(--weight-bold);
+    color: var(--color-info);
+  }
+
+  .arrow {
+    color: var(--color-text-faint);
+  }
+
+  .handle {
+    overflow-wrap: anywhere;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  @media (max-width: 30rem) {
+    .row {
+      grid-template-columns: 1.5em minmax(0, 1fr);
+      gap: 0 var(--space-2);
+    }
+
+    .arrow {
+      display: none;
+    }
+
+    .handle {
+      grid-column: 2;
+      font-size: var(--text-sm);
+    }
+  }
+</style>

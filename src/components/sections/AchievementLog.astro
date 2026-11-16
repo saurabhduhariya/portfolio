@@ -1,0 +1,122 @@
+---
+// Achievements rendered like `git log --graph`.
+import type { Achievement } from '@/data/types';
+import { shortHash } from '@/lib/hash';
+
+interface Props {
+  entries: readonly Achievement[];
+}
+
+const { entries } = Astro.props;
+---
+
+<ol class="log" role="list">
+  {entries.map((entry, index) => (
+    <li class="commit">
+      <span class="graph" aria-hidden="true">
+        *
+      </span>
+      <div class="body">
+        <p class="line">
+          <span class="hash" aria-hidden="true">
+            {shortHash(entry.title)}
+          </span>
+          {index === 0 && (
+            <span class="ref" aria-hidden="true">
+              (HEAD -&gt; main)
+            </span>
+          )}
+          <span class="title">
+            {entry.url ? (
+              <a href={entry.url} target="_blank" rel="noreferrer">
+                {entry.title}
+              </a>
+            ) : (
+              entry.title
+            )}
+          </span>
+          {entry.date && <span class="date">{entry.date}</span>}
+        </p>
+        <ul class="detail" role="list">
+          {entry.detail.map((line) => (
+            <li>{line}</li>
+          ))}
+        </ul>
+      </div>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .log {
+    display: grid;
+  }
+
+  .commit {
+    display: grid;
+    grid-template-columns: 2ch minmax(0, 1fr);
+  }
+
+  .graph {
+    position: relative;
+    font-weight: var(--weight-bold);
+    color: var(--color-accent);
+  }
+
+  /* The vertical "|" line that joins commits. */
+  .graph::after {
+    position: absolute;
+    inset-block: calc(var(--leading-body) * 1em) 0;
+    inset-inline-start: 0.3ch;
+    content: '';
+    border-inline-start: var(--border-width) solid var(--color-border);
+  }
+
+  .commit:last-child .graph::after {
+    display: none;
+  }
+
+  .body {
+    padding-block-end: var(--space-6);
+  }
+
+  .line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-ch);
+    max-inline-size: none;
+  }
+
+  .hash {
+    color: var(--color-accent);
+  }
+
+  .ref {
+    font-weight: var(--weight-bold);
+    color: var(--color-info);
+  }
+
+  .title {
+    font-weight: var(--weight-semibold);
+  }
+
+  .date {
+    color: var(--color-text-muted);
+  }
+
+  .date::before {
+    content: '· ';
+  }
+
+  .detail {
+    display: grid;
+    gap: var(--space-1);
+    margin-block-start: var(--space-2);
+    color: var(--color-text-muted);
+  }
+
+  .detail li::before {
+    content: '  ';
+    white-space: pre;
+  }
+</style>

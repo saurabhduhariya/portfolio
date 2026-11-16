@@ -1,0 +1,32 @@
+---
+// "## heading" style subheading used inside content panes.
+interface Props {
+  level?: 2 | 3;
+  id?: string;
+}
+
+const { level = 2, id } = Astro.props;
+const Tag = level === 2 ? 'h2' : 'h3';
+---
+
+<Tag class="section-label" id={id}>
+  <span class="hash" aria-hidden="true">
+    {level === 2 ? '##' : '###'}
+  </span>
+  <slot />
+</Tag>
+
+<style>
+  .section-label {
+    display: flex;
+    gap: var(--space-ch);
+    margin-block-end: var(--space-3);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+    color: var(--color-text);
+  }
+
+  .hash {
+    color: var(--color-accent);
+  }
+</style>

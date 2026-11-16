@@ -1,0 +1,41 @@
+---
+import Mail from '@lucide/astro/icons/mail';
+import BrandIcon from '@/components/ui/BrandIcon.astro';
+import type { ContactIcon } from '@/data/types';
+
+interface Props {
+  icon: ContactIcon;
+}
+
+const { icon } = Astro.props;
+---
+
+{icon === 'mail' && <Mail class="contact-icon" size="1em" aria-hidden="true" />}
+{icon === 'github' && <BrandIcon slug="github" />}
+{
+  /* simple-icons and Lucide no longer ship a LinkedIn logo, so use a text monogram. */
+  icon === 'linkedin' && (
+    <span class="monogram" aria-hidden="true">
+      in
+    </span>
+  )
+}
+
+<style>
+  .contact-icon {
+    flex-shrink: 0;
+  }
+
+  .monogram {
+    display: inline-grid;
+    place-items: center;
+    /* 1.4em of a 0.7em font ≈ 1em, matching the other icons. */
+    inline-size: 1.4em;
+    block-size: 1.4em;
+    font-size: 0.7em;
+    font-weight: var(--weight-heavy);
+    line-height: 1;
+    border: calc(var(--border-width) * 1.5) solid currentColor;
+    border-radius: var(--border-width);
+  }
+</style>
