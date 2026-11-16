@@ -1,36 +1,18 @@
 ---
-import ProjectCard from '@/components/sections/ProjectCard.astro';
+// /projects/ shows the first project, same view as /projects/<slug>/.
+import ProjectView from '@/components/sections/ProjectView.astro';
 import { projects } from '@/data/projects';
 import ShellLayout from '@/layouts/ShellLayout.astro';
+
+const first = projects[0];
+if (!first) throw new Error('src/data/projects.ts needs at least one project');
 ---
 
-<ShellLayout navId="projects">
-  <p class="count" aria-hidden="true">
-    total {projects.length}
-  </p>
-  <ul class="grid" role="list">
-    {projects.map((project) => (
-      <li>
-        <ProjectCard project={project} />
-      </li>
-    ))}
-  </ul>
+<ShellLayout
+  navId="projects"
+  command={`cat projects/${first.slug}/README.md`}
+  fileLabel={`projects/${first.slug}/README.md`}
+  projectPager
+>
+  <ProjectView project={first} projects={projects} />
 </ShellLayout>
-
-<style>
-  .count {
-    margin-block-end: var(--space-3);
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
-    gap: var(--space-4);
-  }
-
-  .grid > li {
-    display: grid;
-  }
-</style>

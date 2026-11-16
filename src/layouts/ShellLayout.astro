@@ -20,6 +20,8 @@ interface Props {
   navId?: string;
   /** Override the heading/title. Required when navId is omitted. */
   title?: string;
+  /** Visible <h1> when it should differ from the <title> (e.g. project pages). */
+  paneTitle?: string;
   description?: string;
   /** Override the fake command in the pane header. */
   command?: string;
@@ -36,6 +38,7 @@ const THEME_COLOR = '#1d2021';
 const {
   navId,
   title,
+  paneTitle,
   description,
   command,
   fileLabel: fileLabelOverride,
@@ -151,7 +154,7 @@ const profileUrls = contacts
             user={profile.handle}
             host={profile.host}
             command={command ?? current?.command ?? ''}
-            title={heading}
+            title={paneTitle ?? heading}
           />
           <slot />
         </main>
@@ -212,8 +215,11 @@ const profileUrls = contacts
 
   /* position: relative keeps absolutely positioned children (e.g. .visually-hidden labels)
      inside the scrolling pane; otherwise they stretch the page and make it scroll. */
+  /* Flex column so a section can fill the remaining pane height (the project view does). */
   .content {
     position: relative;
+    display: flex;
+    flex-direction: column;
     min-inline-size: 0;
     padding: var(--space-6);
   }

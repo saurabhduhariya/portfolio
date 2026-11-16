@@ -63,8 +63,11 @@ export interface Project {
   summary: string;
   /** Short headline number, e.g. "7k+ downloads in 30 days". */
   metric?: string;
+  /** Tech used. Not shown as tags on the project view (removed on request); kept as data. */
   stack: string[];
-  /** 2-4 bullets for the detail page. Start with a verb. */
+  /** 2-3 short lines (under ~45 characters) shown next to the screenshot. */
+  points: string[];
+  /** Full write-up from the resume. Not shown on the one-screen view; kept for reference. */
   highlights: string[];
   links: ProjectLink[];
   year: number;

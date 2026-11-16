@@ -8,6 +8,11 @@ export const projects: Project[] = [
     summary: 'One-click Google account switcher for the Antigravity IDE',
     metric: '7k+ downloads in 30 days',
     stack: ['TypeScript', 'Svelte', 'Node.js', 'SQLite (sql.js)', 'Vitest'],
+    points: [
+      'Atomic SQLite writes with automatic rollback',
+      'Tokens kept only in the OS keychain',
+      '190+ Vitest tests, CI publishes to Open VSX',
+    ],
     highlights: [
       'Published on the Open VSX Registry: a sidebar extension that saves several Google accounts, switches between them in one click and shows live quota usage.',
       'Switches sessions by editing the IDE’s SQLite state database through sql.js. Writes are atomic (temp file, fsync, rename with retry), every switch is backed up first, and a session that fails to verify is rolled back automatically.',
@@ -25,6 +30,11 @@ export const projects: Project[] = [
     name: 'TubeTalk',
     summary: 'Corrective RAG over YouTube transcripts and comments',
     stack: ['Python', 'FastAPI', 'LangGraph', 'Pinecone', 'VoyageAI', 'Groq', 'yt-dlp', 'Pytest'],
+    points: [
+      '8-node LangGraph Corrective RAG pipeline',
+      'Comments pulled from YouTube’s internal API',
+      'Pytest suite with mocked LLM and Pinecone',
+    ],
     highlights: [
       'Designed an 8-node LangGraph state machine for Corrective RAG: 3-way retrieval grading, sentence-level decomposition with LLM filtering, and a regeneration loop capped at 2 retries to cut hallucinations.',
       'Pulls YouTube comments by parsing an undocumented internal API over raw HTTP, with continuation-token pagination and like-count normalisation. Transcripts come from yt-dlp, chunked at 1000 characters with 100 overlap.',
@@ -38,6 +48,11 @@ export const projects: Project[] = [
     name: 'Clawback',
     summary: 'AI agent that recovers failed Razorpay payments',
     stack: ['React', 'Node.js', 'PostgreSQL', 'Supabase', 'LangGraph', 'Gemini', 'Razorpay API'],
+    points: [
+      'HMAC-verified, de-duplicated Razorpay webhooks',
+      '8-node LangGraph agent with Gemini diagnosis',
+      'RecoverBot chat streams answers over SSE',
+    ],
     highlights: [
       'Handles Razorpay payment.failed webhooks: verifies the HMAC-SHA256 signature on the raw request body and drops duplicate events by event ID in PostgreSQL.',
       'An 8-node LangGraph workflow scores each failed payment (attempts, amount, severity, age), gets a Gemini root-cause diagnosis validated with Zod, and stops after 3 attempts or on non-retryable failures. Recovery links go out through 3 Razorpay endpoints.',
