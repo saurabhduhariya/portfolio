@@ -1,8 +1,10 @@
 ---
-import ComingSoon from '@/components/ui/ComingSoon.astro';
+import AboutSection from '@/components/sections/AboutSection.astro';
+import { profile } from '@/data/profile';
 import ShellLayout from '@/layouts/ShellLayout.astro';
+import { publicFileExists } from '@/lib/files';
 ---
 
 <ShellLayout navId="about">
-  <ComingSoon />
+  <AboutSection profile={profile} resumeAvailable={publicFileExists(profile.resumePath)} />
 </ShellLayout>

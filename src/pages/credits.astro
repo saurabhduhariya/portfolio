@@ -1,8 +1,18 @@
 ---
-import ComingSoon from '@/components/ui/ComingSoon.astro';
+import CreditsSection from '@/components/sections/CreditsSection.astro';
+import { contacts } from '@/data/contacts';
+import { credits, inspiration } from '@/data/credits';
+import { profile } from '@/data/profile';
 import ShellLayout from '@/layouts/ShellLayout.astro';
+
+const github = contacts.find((contact) => contact.icon === 'github');
 ---
 
 <ShellLayout navId="credits">
-  <ComingSoon />
+  <CreditsSection
+    inspiration={inspiration}
+    credits={credits}
+    authorName={profile.name}
+    authorUrl={github?.url ?? '/'}
+  />
 </ShellLayout>

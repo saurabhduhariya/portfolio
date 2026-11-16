@@ -1,0 +1,172 @@
+---
+import ExternalLink from '@lucide/astro/icons/external-link';
+import SectionLabel from '@/components/ui/SectionLabel.astro';
+import TagList from '@/components/ui/TagList.astro';
+import { projects } from '@/data/projects';
+import type { Project } from '@/data/types';
+import ShellLayout from '@/layouts/ShellLayout.astro';
+
+export function getStaticPaths() {
+  return projects.map((project) => ({ params: { slug: project.slug }, props: { project } }));
+}
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const index = projects.findIndex((p) => p.slug === project.slug);
+const previous = projects[index - 1];
+const next = projects[index + 1];
+---
+
+<ShellLayout
+  navId="projects"
+  title={project.name}
+  description={project.summary}
+  command={`cat projects/${project.slug}/README.md`}
+  fileLabel={`projects/${project.slug}/README.md`}
+>
+  <article class="project">
+    <p class="back">
+      <a href="/projects/">
+        <span aria-hidden="true">← </span>cd ..
+      </a>
+    </p>
+
+    <p class="summary">{project.summary}</p>
+    {project.metric && <p class="metric">{project.metric}</p>}
+
+    <dl class="meta">
+      <div>
+        <dt>year</dt>
+        <dd>{project.year}</dd>
+      </div>
+    </dl>
+
+    <section aria-labelledby="stack-heading">
+      <SectionLabel id="stack-heading">Stack</SectionLabel>
+      <TagList items={project.stack} label={`${project.name} tech stack`} />
+    </section>
+
+    <section aria-labelledby="highlights-heading">
+      <SectionLabel id="highlights-heading">What I built</SectionLabel>
+      <ul class="highlights" role="list">
+        {project.highlights.map((line) => (
+          <li>{line}</li>
+        ))}
+      </ul>
+    </section>
+
+    <section aria-labelledby="links-heading">
+      <SectionLabel id="links-heading">Links</SectionLabel>
+      <ul class="links" role="list">
+        {project.links.map((link) => (
+          <li>
+            <a href={link.url} target="_blank" rel="noreferrer">
+              {link.label}
+              <ExternalLink size="0.9em" aria-hidden="true" />
+              <span class="visually-hidden">(opens in a new tab)</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <nav class="pager" aria-label="More projects">
+      {previous ? (
+        <a href={`/projects/${previous.slug}/`} rel="prev">
+          <span aria-hidden="true">← </span>
+          {previous.name}
+        </a>
+      ) : (
+        <span />
+      )}
+      {next && (
+        <a href={`/projects/${next.slug}/`} rel="next">
+          {next.name}
+          <span aria-hidden="true"> →</span>
+        </a>
+      )}
+    </nav>
+  </article>
+</ShellLayout>
+
+<style>
+  .project {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .back {
+    font-size: var(--text-sm);
+  }
+
+  .summary {
+    font-size: var(--text-lg);
+  }
+
+  .metric {
+    margin-block-start: calc(var(--space-4) * -1);
+    font-weight: var(--weight-semibold);
+    color: var(--color-success);
+  }
+
+  .metric::before {
+    content: '▲ ';
+  }
+
+  .meta div {
+    display: flex;
+    gap: var(--space-ch);
+  }
+
+  dt {
+    color: var(--color-info);
+  }
+
+  dt::after {
+    content: ':';
+    color: var(--color-text-muted);
+  }
+
+  dd {
+    margin: 0;
+  }
+
+  .highlights {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .highlights li {
+    display: grid;
+    grid-template-columns: 2ch minmax(0, 1fr);
+    max-inline-size: var(--measure);
+  }
+
+  .highlights li::before {
+    content: '-';
+    color: var(--color-accent);
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-6);
+  }
+
+  .links a {
+    display: inline-flex;
+    gap: var(--space-1);
+    align-items: center;
+  }
+
+  .pager {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding-block-start: var(--space-4);
+    border-block-start: var(--border-width) solid var(--color-border);
+  }
+</style>

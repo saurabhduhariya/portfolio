@@ -1,8 +1,9 @@
 ---
-import ComingSoon from '@/components/ui/ComingSoon.astro';
+import SkillsSection from '@/components/sections/SkillsSection.astro';
+import { skillGroups } from '@/data/skills';
 import ShellLayout from '@/layouts/ShellLayout.astro';
 ---
 
 <ShellLayout navId="skills">
-  <ComingSoon />
+  <SkillsSection groups={skillGroups} />
 </ShellLayout>

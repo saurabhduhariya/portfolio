@@ -1,0 +1,9 @@
+---
+import AchievementLog from '@/components/sections/AchievementLog.astro';
+import { achievements } from '@/data/achievements';
+import ShellLayout from '@/layouts/ShellLayout.astro';
+---
+
+<ShellLayout navId="achievements">
+  <AchievementLog entries={achievements} />
+</ShellLayout>

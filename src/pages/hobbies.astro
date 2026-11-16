@@ -1,8 +1,9 @@
 ---
-import ComingSoon from '@/components/ui/ComingSoon.astro';
+import HobbyServices from '@/components/sections/HobbyServices.astro';
+import { hobbies } from '@/data/hobbies';
 import ShellLayout from '@/layouts/ShellLayout.astro';
 ---
 
 <ShellLayout navId="hobbies">
-  <ComingSoon />
+  <HobbyServices hobbies={hobbies} />
 </ShellLayout>

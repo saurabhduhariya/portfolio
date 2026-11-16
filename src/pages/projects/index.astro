@@ -1,8 +1,36 @@
 ---
-import ComingSoon from '@/components/ui/ComingSoon.astro';
+import ProjectCard from '@/components/sections/ProjectCard.astro';
+import { projects } from '@/data/projects';
 import ShellLayout from '@/layouts/ShellLayout.astro';
 ---
 
 <ShellLayout navId="projects">
-  <ComingSoon />
+  <p class="count" aria-hidden="true">
+    total {projects.length}
+  </p>
+  <ul class="grid" role="list">
+    {projects.map((project) => (
+      <li>
+        <ProjectCard project={project} />
+      </li>
+    ))}
+  </ul>
 </ShellLayout>
+
+<style>
+  .count {
+    margin-block-end: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+    gap: var(--space-4);
+  }
+
+  .grid > li {
+    display: grid;
+  }
+</style>

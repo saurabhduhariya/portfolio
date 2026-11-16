@@ -24,15 +24,20 @@ export function buildSeo({ pageTitle, description, pathname, site, profile }: Se
   return { title, description, canonical };
 }
 
-/** schema.org Person block for the home page. */
-export function personJsonLd(profile: Profile, site: URL | undefined): string {
+/** schema.org Person block for the home page. `sameAs` lists profile URLs (GitHub, LinkedIn). */
+export function personJsonLd(profile: Profile, site: URL | undefined, sameAs: string[]): string {
   const data = {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: profile.name,
     description: profile.tagline,
     url: site?.href,
-    sameAs: [profile.githubUrl],
+    alumniOf: {
+      '@type': 'CollegeOrUniversity',
+      name: profile.education.school,
+      url: profile.education.schoolUrl,
+    },
+    sameAs,
   };
   // Escape "<" so the JSON can never close the surrounding <script> tag.
   return JSON.stringify(data).replace(/</g, '\\u003c');

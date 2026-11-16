@@ -1,8 +1,9 @@
 ---
-import ComingSoon from '@/components/ui/ComingSoon.astro';
+import ContactList from '@/components/sections/ContactList.astro';
+import { contactIntro, contacts } from '@/data/contacts';
 import ShellLayout from '@/layouts/ShellLayout.astro';
 ---
 
 <ShellLayout navId="contact">
-  <ComingSoon />
+  <ContactList intro={contactIntro} contacts={contacts} />
 </ShellLayout>
