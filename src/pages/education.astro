@@ -1,0 +1,9 @@
+---
+import EducationSection from '@/components/sections/EducationSection.astro';
+import { profile } from '@/data/profile';
+import ShellLayout from '@/layouts/ShellLayout.astro';
+---
+
+<ShellLayout navId="education">
+  <EducationSection education={profile.education} />
+</ShellLayout>

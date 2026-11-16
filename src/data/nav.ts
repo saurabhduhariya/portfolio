@@ -13,6 +13,15 @@ export const navItems: NavItem[] = [
       'Saurabh Prajapat, CS undergrad at IIT (ISM) Dhanbad who builds developer tools and AI agents.',
   },
   {
+    id: 'education',
+    label: 'education.md',
+    path: '/education/',
+    kind: 'file',
+    command: 'cat education.md',
+    title: 'Education',
+    description: 'B.Tech in Computer Science and Engineering at IIT (ISM) Dhanbad, CGPA 8.40.',
+  },
+  {
     id: 'skills',
     label: 'skills/',
     path: '/skills/',

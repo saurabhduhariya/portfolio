@@ -1,7 +1,5 @@
 ---
 import FileText from '@lucide/astro/icons/file-text';
-import SectionLabel from '@/components/ui/SectionLabel.astro';
-import TagList from '@/components/ui/TagList.astro';
 import type { Profile } from '@/data/types';
 
 interface Props {
@@ -46,25 +44,13 @@ const fetchTitle = `${profile.handle}@${profile.host}`;
       ))}
     </dl>
   </section>
-
-  <section class="education" aria-labelledby="education-heading">
-    <SectionLabel id="education-heading">Education</SectionLabel>
-    <p class="school">
-      <a href={profile.education.schoolUrl} target="_blank" rel="noreferrer">
-        {profile.education.school}
-      </a>
-    </p>
-    <p class="degree">{profile.education.degree}</p>
-    <p class="coursework-label">Relevant coursework</p>
-    <TagList items={profile.education.coursework} label="Relevant coursework" />
-  </section>
 </div>
 
 <style>
   .about {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-8);
+    gap: var(--space-6);
   }
 
   .bio {
@@ -148,33 +134,10 @@ const fetchTitle = `${profile.handle}@${profile.host}`;
     margin: 0;
   }
 
-  .education {
-    display: grid;
-    gap: var(--space-2);
-  }
-
-  .school {
-    font-weight: var(--weight-semibold);
-  }
-
-  .degree,
-  .coursework-label {
-    color: var(--color-text-muted);
-  }
-
-  .coursework-label {
-    margin-block-start: var(--space-2);
-    font-size: var(--text-sm);
-  }
-
   @media (min-width: 75rem) {
     .about {
       grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
       align-items: start;
-    }
-
-    .education {
-      grid-column: 1 / -1;
     }
   }
 

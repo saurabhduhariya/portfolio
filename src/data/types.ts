@@ -29,10 +29,15 @@ export interface Profile {
   bio: string[];
   /** neofetch-style key/value block on the About page. */
   quickFacts: Fact[];
+  /** Shown on the Education page. */
   education: {
     school: string;
     schoolUrl: string;
     degree: string;
+    cgpa: string;
+    /** e.g. "Expected June 2028" */
+    graduation: string;
+    location: string;
     coursework: string[];
   };
   /** Public Google Drive "view" link to the resume PDF. */

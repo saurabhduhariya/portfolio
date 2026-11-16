@@ -1,0 +1,116 @@
+---
+import ExternalLink from '@lucide/astro/icons/external-link';
+import SectionLabel from '@/components/ui/SectionLabel.astro';
+import TagList from '@/components/ui/TagList.astro';
+import type { Profile } from '@/data/types';
+
+interface Props {
+  education: Profile['education'];
+}
+
+const { education } = Astro.props;
+
+const details = [
+  { label: 'degree', value: education.degree },
+  { label: 'cgpa', value: education.cgpa },
+  { label: 'graduation', value: education.graduation },
+  { label: 'location', value: education.location },
+];
+---
+
+<div class="education">
+  <section class="school-card" aria-labelledby="school-heading">
+    <h2 id="school-heading" class="school">
+      <a href={education.schoolUrl} target="_blank" rel="noreferrer">
+        {education.school}
+        <ExternalLink size="0.8em" aria-hidden="true" />
+        <span class="visually-hidden">(opens in a new tab)</span>
+      </a>
+    </h2>
+    <dl>
+      {details.map((detail) => (
+        <div class="row">
+          <dt>{detail.label}</dt>
+          <dd>{detail.value}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+
+  <section aria-labelledby="coursework-heading">
+    <SectionLabel id="coursework-heading">Relevant coursework</SectionLabel>
+    <TagList items={education.coursework} label="Relevant coursework" />
+  </section>
+</div>
+
+<style>
+  .education {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .school-card {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-6);
+    background-color: var(--color-bg);
+    border: var(--border-width) solid var(--color-border);
+    border-inline-start: calc(var(--border-width) * 3) solid var(--color-accent);
+    border-radius: var(--radius);
+  }
+
+  .school {
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+  }
+
+  .school a {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-items: center;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .school a:hover {
+    color: var(--color-accent);
+  }
+
+  dl {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 11ch minmax(0, 1fr);
+    gap: var(--space-ch);
+  }
+
+  dt {
+    font-weight: var(--weight-bold);
+    color: var(--color-info);
+  }
+
+  dt::after {
+    content: ':';
+    color: var(--color-text-muted);
+  }
+
+  dd {
+    margin: 0;
+  }
+
+  @media (max-width: 30rem) {
+    .school-card {
+      padding: var(--space-3) var(--space-4);
+    }
+
+    .row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+      margin-block-end: var(--space-2);
+    }
+  }
+</style>
