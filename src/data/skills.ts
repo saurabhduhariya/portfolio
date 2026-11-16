@@ -1,29 +1,68 @@
 import type { SkillGroup } from './types';
 
-// TODO(content): replace with real skills. `icon` is a simple-icons slug.
+// Source: resume, "Technical Skills". `icon` is a simple-icons slug; omitted where none exists.
 export const skillGroups: SkillGroup[] = [
   {
     title: 'Languages',
     items: [
-      { name: 'TypeScript', icon: 'typescript', level: 'daily' },
-      { name: 'Python', icon: 'python', level: 'comfortable' },
-      { name: 'C++', icon: 'cplusplus', level: 'comfortable' },
+      { name: 'C++', icon: 'cplusplus' },
+      { name: 'C', icon: 'c' },
+      { name: 'Python', icon: 'python' },
+      { name: 'Java', icon: 'openjdk' },
+      { name: 'SQL' },
+      { name: 'JavaScript', icon: 'javascript' },
+      { name: 'TypeScript', icon: 'typescript' },
     ],
   },
   {
-    title: 'Frameworks',
+    title: 'AI/ML & Data Science',
     items: [
-      { name: 'React', icon: 'react', level: 'daily' },
-      { name: 'Node.js', icon: 'nodedotjs', level: 'comfortable' },
-      { name: 'Astro', icon: 'astro', level: 'learning' },
+      { name: 'NumPy', icon: 'numpy' },
+      { name: 'Pandas', icon: 'pandas' },
+      { name: 'Scikit-learn', icon: 'scikitlearn' },
+      { name: 'Matplotlib' },
+      { name: 'Seaborn' },
+      { name: 'TensorFlow', icon: 'tensorflow' },
+      { name: 'PyTorch', icon: 'pytorch' },
+      { name: 'LangChain', icon: 'langchain' },
+      { name: 'LangGraph', icon: 'langgraph' },
+      { name: 'SetFit' },
+    ],
+  },
+  {
+    title: 'Web & Backend',
+    items: [
+      { name: 'React', icon: 'react' },
+      { name: 'Next.js', icon: 'nextdotjs' },
+      { name: 'Svelte', icon: 'svelte' },
+      { name: 'Node.js', icon: 'nodedotjs' },
+      { name: 'Express', icon: 'express' },
+      { name: 'FastAPI', icon: 'fastapi' },
+      { name: 'Tailwind CSS', icon: 'tailwindcss' },
+      { name: 'REST' },
+      { name: 'WebSockets' },
+      { name: 'Server-Sent Events' },
+    ],
+  },
+  {
+    title: 'Databases',
+    items: [
+      { name: 'PostgreSQL', icon: 'postgresql' },
+      { name: 'SQLite', icon: 'sqlite' },
+      { name: 'Supabase', icon: 'supabase' },
+      { name: 'MongoDB', icon: 'mongodb' },
+      { name: 'Pinecone' },
     ],
   },
   {
     title: 'Tools',
     items: [
-      { name: 'Git', icon: 'git', level: 'daily' },
-      { name: 'Linux', icon: 'linux', level: 'daily' },
-      { name: 'Neovim', icon: 'neovim', level: 'daily' },
+      { name: 'Git', icon: 'git' },
+      { name: 'Linux', icon: 'linux' },
+      { name: 'Docker', icon: 'docker' },
+      { name: 'Vitest', icon: 'vitest' },
+      { name: 'Pytest', icon: 'pytest' },
+      { name: 'Postman', icon: 'postman' },
     ],
   },
 ];

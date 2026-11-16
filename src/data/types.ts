@@ -1,7 +1,7 @@
 // Shapes for everything in src/data/. See docs/CONTENT_GUIDE.md.
 
 export interface NavItem {
-  /** Stable id, also used for the mobile tab anchor. */
+  /** Stable id, used to mark the current page. */
   id: string;
   /** Label shown in the file tree, e.g. "about.md" or "skills/". */
   label: string;
@@ -16,56 +16,82 @@ export interface NavItem {
   description: string;
 }
 
+export interface Fact {
+  label: string;
+  value: string;
+}
+
 export interface Profile {
   name: string;
   handle: string;
   host: string;
   tagline: string;
   bio: string[];
-  school?: { name: string; url: string; degree: string; years: string };
-  location?: string;
+  /** neofetch-style key/value block on the About page. */
+  quickFacts: Fact[];
+  education: {
+    school: string;
+    schoolUrl: string;
+    degree: string;
+    coursework: string[];
+  };
+  /** Path under public/. The link only renders if the file exists at build time. */
   resumePath: string;
-  quickFacts: { label: string; value: string }[];
-  availability?: string;
-  githubUrl: string;
 }
 
 export interface SkillGroup {
   title: string;
-  items: { name: string; icon?: string; level?: 'daily' | 'comfortable' | 'learning' }[];
+  /** `icon` is a simple-icons slug, e.g. "typescript". Omit when no logo exists. */
+  items: { name: string; icon?: string }[];
+}
+
+export interface ProjectLink {
+  label: string;
+  url: string;
 }
 
 export interface Project {
+  /** Stable, kebab-case, used in the URL. Never change once published. */
   slug: string;
   name: string;
+  /** One line, under 70 characters. */
   summary: string;
-  description?: string;
+  /** Short headline number, e.g. "7k+ downloads in 30 days". */
+  metric?: string;
   stack: string[];
-  image?: string;
-  repoUrl?: string;
-  liveUrl?: string;
+  /** 2-4 bullets for the detail page. Start with a verb. */
+  highlights: string[];
+  links: ProjectLink[];
   year: number;
-  featured?: boolean;
 }
 
-export interface ExperienceEntry {
-  hash: string;
+export interface Achievement {
   title: string;
-  date: string;
-  points: string[];
+  date?: string;
+  detail: string[];
   url?: string;
 }
 
 export interface Hobby {
   name: string;
+  /** Shown systemctl-style: active (running) / active (idle) / inactive (dead). */
   status: 'active' | 'often' | 'rarely';
+  description: string;
   url?: string;
-  note?: string;
 }
+
+export type ContactIcon = 'mail' | 'github' | 'linkedin';
 
 export interface Contact {
   label: string;
   handle: string;
+  /** https:// or mailto: */
   url: string;
-  icon: string;
+  icon: ContactIcon;
+}
+
+export interface Credit {
+  name: string;
+  url: string;
+  note: string;
 }

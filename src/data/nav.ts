@@ -9,7 +9,8 @@ export const navItems: NavItem[] = [
     kind: 'file',
     command: 'cat about.md',
     title: 'About me',
-    description: 'Who I am, what I study and what I like to build.',
+    description:
+      'Saurabh Prajapat, CS undergrad at IIT (ISM) Dhanbad who builds developer tools and AI agents.',
   },
   {
     id: 'skills',
@@ -18,7 +19,7 @@ export const navItems: NavItem[] = [
     kind: 'directory',
     command: 'ls skills/',
     title: 'Skills',
-    description: 'Languages, frameworks and tools I work with.',
+    description: 'Languages, frameworks, databases and tools I work with.',
   },
   {
     id: 'projects',
@@ -27,16 +28,16 @@ export const navItems: NavItem[] = [
     kind: 'directory',
     command: 'ls projects/',
     title: 'Projects',
-    description: 'Things I have built, with links to code and live demos.',
+    description: 'Switchyard, TubeTalk, Clawback and other things I have built.',
   },
   {
-    id: 'experience',
-    label: 'experience.log',
-    path: '/experience/',
+    id: 'achievements',
+    label: 'achievements.log',
+    path: '/achievements/',
     kind: 'file',
-    command: 'git log --oneline',
-    title: 'Experience',
-    description: 'Internships, hackathons and open-source work.',
+    command: 'git log achievements.log',
+    title: 'Achievements',
+    description: 'Hackathon wins, downloads, competitive programming and hackathons I joined.',
   },
   {
     id: 'hobbies',
@@ -54,7 +55,7 @@ export const navItems: NavItem[] = [
     kind: 'directory',
     command: 'cat contact.txt',
     title: 'Get in touch',
-    description: 'Where to find me and how to reach me.',
+    description: 'Email, GitHub and LinkedIn.',
   },
   {
     id: 'credits',

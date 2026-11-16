@@ -1,20 +1,39 @@
 import type { Profile } from './types';
 
-// TODO(content): replace placeholder values with real details.
+// Source: resume (Nov 2026). Phone number and admission number are deliberately left out.
 export const profile: Profile = {
-  name: 'Saurabh Duhariya',
+  name: 'Saurabh Prajapat',
   handle: 'saurabh',
   host: 'portfolio',
-  tagline: 'Developer · CS undergrad · builds things for the web',
+  tagline: 'CS undergrad @ IIT (ISM) Dhanbad · developer tools & AI agents',
   bio: [
-    'Hi! I am a computer science student who likes building fast, simple web apps.',
-    'When I am not coding, I am probably reading, gaming or tweaking my Linux setup.',
+    "Hi! I'm Saurabh, a Computer Science and Engineering undergrad at IIT (ISM) Dhanbad.",
+    'I like building tools that other developers use every day. Switchyard, my account switcher for the Google Antigravity IDE, passed 7,000 downloads on Open VSX in its first 30 days.',
+    'Lately I build AI agents with LangGraph: a Corrective RAG system that answers questions about YouTube videos, and an agent that recovers failed Razorpay payments.',
+    'Away from the keyboard I play chess, cricket and table tennis.',
   ],
-  resumePath: '/resume/resume.pdf',
   quickFacts: [
-    { label: 'editor', value: 'neovim' },
-    { label: 'shell', value: 'fish' },
-    { label: 'theme', value: 'gruvbox' },
+    { label: 'degree', value: 'B.Tech, Computer Science & Engineering' },
+    { label: 'college', value: 'IIT (ISM) Dhanbad' },
+    { label: 'cgpa', value: '8.40 / 10' },
+    { label: 'graduating', value: 'June 2028' },
+    { label: 'location', value: 'Dhanbad, Jharkhand' },
+    { label: 'focus', value: 'developer tools, AI agents, backend' },
+    { label: 'problems', value: '1000+ solved (LeetCode, Codeforces)' },
   ],
-  githubUrl: 'https://github.com/saurabhduhariya',
+  education: {
+    school: 'Indian Institute of Technology (Indian School of Mines), Dhanbad',
+    schoolUrl: 'https://www.iitism.ac.in/',
+    degree: 'Bachelor of Technology in Computer Science and Engineering',
+    coursework: [
+      'Data Structures & Algorithms',
+      'Design & Analysis of Algorithms',
+      'Object-Oriented Programming',
+      'Operating Systems',
+      'Database Management Systems',
+      'Computer Architecture & Organization',
+      'Probability & Statistics',
+    ],
+  },
+  resumePath: '/resume/resume.pdf',
 };
