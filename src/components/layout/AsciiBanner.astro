@@ -1,0 +1,279 @@
+---
+// "HEY, I'M SAURABH" banner (design v2, phase B). See docs/ENHANCEMENT_PLAN.md §4.2–4.3.
+//
+// Three variants, picked by CSS only (no JS, no layout shift):
+//   one line  (6 rows × 108 cols)  when the banner is ≥ 36.5rem wide (≥ 9px characters)
+//   two lines (13 rows × 57 cols)  narrower (tablets in portrait, phones)
+//   plain text name                 screen < 40rem tall, or banner < 18.75rem wide
+// The art is drawn as SVG paths at build time (src/lib/ascii.ts), so it is sharp at any size and
+// has no gaps between rows. It is aria-hidden; the link carries the real name for screen readers.
+//
+// Animation (CSS only, all switched off by prefers-reduced-motion and by [data-fx='off']):
+//   print-in  rows appear top to bottom, once per session (scripts/banner.ts sets data-banner-seen)
+//   boil      shadow shifts by ~1px and the fill dims slightly, 2 frames × 400ms, forever
+//   glitch    aqua/pink copies jitter for 3 frames on hover or keyboard focus
+import { bannerOneLine, bannerTwoLine, type BannerArt } from '@/data/banner';
+import { asciiToPaths } from '@/lib/ascii';
+
+interface Props {
+  name: string;
+  tagline: string;
+}
+
+const { name, tagline } = Astro.props;
+
+const PAD = 1; // user units around the art so strokes and the boil offset are never clipped
+
+function variant(id: string, art: BannerArt) {
+  const paths = asciiToPaths(art.rows);
+  return {
+    id,
+    rows: art.rows.length,
+    viewBox: `${-PAD} ${-PAD} ${paths.width + PAD * 2} ${paths.height + PAD * 2}`,
+    ...paths,
+  };
+}
+
+const variants = [variant('one', bannerOneLine), variant('two', bannerTwoLine)];
+---
+
+<header class="banner">
+  <a class="banner-link" href="/">
+    <span class="visually-hidden">{name}</span>
+    {variants.map((v) => (
+      <svg
+        class={`art art-${v.id}`}
+        viewBox={v.viewBox}
+        preserveAspectRatio="xMinYMin meet"
+        aria-hidden="true"
+        focusable="false"
+        style={`--rows: ${v.rows}`}
+      >
+        <defs>
+          <path id={`banner-${v.id}-fill`} d={v.fill} />
+        </defs>
+        <path class="shadow" d={v.shadow} />
+        <use class="ghost ghost-a" href={`#banner-${v.id}-fill`} />
+        <use class="ghost ghost-b" href={`#banner-${v.id}-fill`} />
+        <use class="fill" href={`#banner-${v.id}-fill`} />
+      </svg>
+    ))}
+    <span class="plain" aria-hidden="true">
+      {name}
+    </span>
+  </a>
+  <p class="tagline">
+    {name} · {tagline}
+  </p>
+</header>
+
+<style>
+  .banner {
+    position: relative;
+    display: grid;
+    gap: var(--space-3);
+    container: banner / inline-size;
+  }
+
+  /* Shrinks to the art, so the hover/focus area is the banner itself, not the whole row. */
+  .banner-link {
+    display: block;
+    inline-size: fit-content;
+    max-inline-size: 100%;
+    color: var(--color-banner-fill);
+    text-decoration: none;
+    border-radius: var(--radius);
+  }
+
+  /* ---------- variants ---------- */
+  /* Height is fixed; width follows from the viewBox ratio, capped at the banner width. */
+  .art {
+    display: none;
+    inline-size: auto;
+    block-size: var(--banner-height);
+    max-inline-size: 100%;
+    overflow: visible;
+  }
+
+  .art-two {
+    display: block;
+    block-size: var(--banner-height-stacked);
+  }
+
+  .plain {
+    display: none;
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-heavy);
+    line-height: var(--leading-tight);
+  }
+
+  @container banner (min-width: 36.5rem) {
+    .art-one {
+      display: block;
+    }
+
+    .art-two {
+      display: none;
+    }
+  }
+
+  /* Later rules win (same specificity), so these two override the variant rules above. */
+  @container banner (max-width: 18.75rem) {
+    .art-one,
+    .art-two {
+      display: none;
+    }
+
+    .plain {
+      display: block;
+    }
+  }
+
+  @media (max-height: 40rem) {
+    .art-one,
+    .art-two {
+      display: none;
+    }
+
+    .plain {
+      display: block;
+    }
+
+    .tagline {
+      display: none;
+    }
+  }
+
+  /* ---------- layers ---------- */
+  .shadow {
+    fill: none;
+    stroke: var(--color-banner-shadow);
+    stroke-width: 1;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+  }
+
+  .fill {
+    fill: var(--color-banner-fill);
+    shape-rendering: crispEdges;
+  }
+
+  .ghost {
+    opacity: 0;
+    shape-rendering: crispEdges;
+  }
+
+  .ghost-a {
+    fill: var(--color-info);
+  }
+
+  .ghost-b {
+    fill: var(--color-tag);
+  }
+
+  /* Full width of the banner (the default 72ch paragraph cap made it wrap early). */
+  .tagline {
+    max-inline-size: none;
+    color: var(--color-text-muted);
+  }
+
+  /* ---------- animation ---------- */
+  /* Print-in: one row per step, like terminal output. Skipped after the first page view. */
+  .art {
+    animation: banner-print var(--duration-print) steps(var(--rows), jump-end) both;
+  }
+
+  :global(:root[data-banner-seen]) .art {
+    animation: none;
+  }
+
+  /* Boil: 2 frames × --duration-frame. 100% equals the resting frame, so a stopped animation
+     (reduced motion) always shows frame A. */
+  .shadow {
+    animation: banner-boil-shadow calc(var(--duration-frame) * 2) steps(1, end) infinite;
+  }
+
+  .fill {
+    animation: banner-boil-fill calc(var(--duration-frame) * 2) steps(1, end) infinite;
+  }
+
+  .banner-link:hover .ghost-a,
+  .banner-link:focus-visible .ghost-a {
+    animation: banner-glitch-a var(--duration-glitch) steps(1, end);
+  }
+
+  .banner-link:hover .ghost-b,
+  .banner-link:focus-visible .ghost-b {
+    animation: banner-glitch-b var(--duration-glitch) steps(1, end);
+  }
+
+  /* Effects switch (phase C sets data-fx on <html>). */
+  :global(:root[data-fx='off']) .art,
+  :global(:root[data-fx='off']) .shadow,
+  :global(:root[data-fx='off']) .fill,
+  :global(:root[data-fx='off']) .ghost {
+    animation: none;
+  }
+
+  @keyframes banner-print {
+    from {
+      clip-path: inset(0 0 100% 0);
+    }
+
+    to {
+      clip-path: inset(0);
+    }
+  }
+
+  @keyframes banner-boil-shadow {
+    50% {
+      transform: translate(0.6px, 0.6px);
+    }
+  }
+
+  @keyframes banner-boil-fill {
+    50% {
+      opacity: 0.9;
+    }
+  }
+
+  @keyframes banner-glitch-a {
+    0% {
+      opacity: 0.9;
+      transform: translate(-1.2px, 0);
+    }
+
+    33% {
+      transform: translate(1px, -0.6px);
+    }
+
+    66% {
+      transform: translate(-0.6px, 0.6px);
+    }
+
+    100% {
+      opacity: 0;
+      transform: none;
+    }
+  }
+
+  @keyframes banner-glitch-b {
+    0% {
+      opacity: 0.9;
+      transform: translate(1.2px, 0.6px);
+    }
+
+    33% {
+      transform: translate(-1px, 0.6px);
+    }
+
+    66% {
+      transform: translate(0.6px, -0.6px);
+    }
+
+    100% {
+      opacity: 0;
+      transform: none;
+    }
+  }
+</style>

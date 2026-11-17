@@ -36,6 +36,8 @@
   --color-link-visited: var(--gruvbox-blue);
   --color-tag: var(--gruvbox-purple);
   --color-danger: var(--gruvbox-red);
+  --color-banner-fill: var(--gruvbox-yellow);
+  --color-banner-shadow: var(--gruvbox-orange);
 
   color-scheme: dark;
 }
