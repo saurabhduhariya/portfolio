@@ -31,20 +31,19 @@ const { items, currentId } = Astro.props;
 </nav>
 
 <style>
+  /* Borderless strip inside the window, under the banner (the window draws the frame). */
   .mobile-tabs {
     /* offsetParent for the tabs, so scroll offsets are measured from here. */
     position: relative;
     overflow-x: auto;
     scrollbar-width: none;
-    border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius);
-    background-color: var(--color-surface);
+    border-block-end: var(--border-width) solid var(--color-border);
   }
 
   ul {
     display: flex;
     gap: var(--space-1);
-    padding: var(--space-1);
+    padding: var(--space-2) var(--space-3);
   }
 
   .tab {

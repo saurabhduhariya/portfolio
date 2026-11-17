@@ -1,0 +1,72 @@
+---
+// Desktop sidebar: file tree on top, a small summary pinned to the bottom.
+import FileTree from '@/components/layout/FileTree.astro';
+import type { NavItem } from '@/data/types';
+
+interface Props {
+  items: readonly NavItem[];
+  currentId: string | undefined;
+  rootLabel: string;
+  projectCount: number;
+  status: string;
+}
+
+const { items, currentId, rootLabel, projectCount, status } = Astro.props;
+const summary = `${items.length} entries · ${projectCount} project${projectCount === 1 ? '' : 's'}`;
+---
+
+<div class="sidebar-inner">
+  <FileTree items={items} currentId={currentId} rootLabel={rootLabel} />
+  <footer class="footer">
+    <p class="summary" aria-hidden="true">
+      {summary}
+    </p>
+    <p class="status">
+      <span class="pulse" aria-hidden="true"></span>
+      {status}
+    </p>
+  </footer>
+</div>
+
+<style>
+  .sidebar-inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    min-block-size: 100%;
+  }
+
+  .footer {
+    display: grid;
+    gap: var(--space-1);
+    margin-block-start: auto;
+    padding-inline: var(--space-2);
+    font-size: var(--text-sm);
+  }
+
+  .summary {
+    color: var(--color-text-muted);
+  }
+
+  .status {
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+    color: var(--color-success);
+  }
+
+  .pulse {
+    flex-shrink: 0;
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    background-color: currentColor;
+    border-radius: 50%;
+    animation: pulse var(--duration-pulse) ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    50% {
+      opacity: 0.35;
+    }
+  }
+</style>

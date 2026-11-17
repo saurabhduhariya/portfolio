@@ -4,15 +4,17 @@ import type { NavItem } from '@/data/types';
 interface Props {
   items: readonly NavItem[];
   currentId: string | undefined;
+  /** Shown above the tree, e.g. "~/saurabh". */
+  rootLabel: string;
 }
 
-const { items, currentId } = Astro.props;
+const { items, currentId, rootLabel } = Astro.props;
 const lastIndex = items.length - 1;
 ---
 
 <nav class="file-tree" aria-label="Sections">
   <p class="root" aria-hidden="true">
-    ~/
+    {rootLabel}
   </p>
   <ul role="list">
     {items.map((item, index) => {
@@ -40,19 +42,24 @@ const lastIndex = items.length - 1;
 </nav>
 
 <style>
-  .file-tree {
-    padding: var(--space-4);
+  .root {
+    margin-block-end: var(--space-2);
+    padding-inline: var(--space-2);
+    font-weight: var(--weight-bold);
+    color: var(--color-info);
   }
 
-  .root {
-    margin-block-end: var(--space-1);
-    color: var(--color-info);
+  ul {
+    display: grid;
+    gap: 2px;
   }
 
   .item {
     display: flex;
     align-items: center;
-    padding-inline-end: var(--space-2);
+    min-block-size: var(--nav-row);
+    padding-inline: var(--space-2);
+    font-size: var(--text-md);
     white-space: nowrap;
     color: var(--color-text);
     text-decoration: none;

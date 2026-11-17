@@ -1,22 +1,20 @@
 ---
+// Starship-style prompt ("saurabh in ~ ❯ cat about.md█") and the page heading.
 interface Props {
   user: string;
-  host: string;
   command: string;
   title: string;
 }
 
-const { user, host, command, title } = Astro.props;
+const { user, command, title } = Astro.props;
 ---
 
 <header class="pane-header">
   <p class="prompt" aria-hidden="true">
-    <span class="user">
-      {user}@{host}
-    </span>
-    <span class="sep">:</span>
+    <span class="user">{user}</span>
+    <span class="in">in</span>
     <span class="path">~</span>
-    <span class="sep">$</span>
+    <span class="arrow">❯</span>
     <span class="command">{command}</span>
     <span class="cursor"></span>
   </p>
@@ -26,10 +24,8 @@ const { user, host, command, title } = Astro.props;
 <style>
   .pane-header {
     display: grid;
-    gap: var(--space-3);
-    padding-block-end: var(--space-3);
-    margin-block-end: var(--space-4);
-    border-block-end: var(--border-width) solid var(--color-border);
+    gap: var(--space-2);
+    margin-block-end: var(--space-6);
   }
 
   .prompt {
@@ -38,12 +34,20 @@ const { user, host, command, title } = Astro.props;
     overflow-wrap: anywhere;
   }
 
+  /* Gaps between prompt parts come from margins, not HTML whitespace (Astro collapses it). */
+  .in,
+  .path,
+  .arrow,
+  .command {
+    margin-inline-start: var(--space-ch);
+  }
+
   .user {
     font-weight: var(--weight-bold);
     color: var(--color-success);
   }
 
-  .sep {
+  .in {
     color: var(--color-text-muted);
   }
 
@@ -51,9 +55,12 @@ const { user, host, command, title } = Astro.props;
     color: var(--color-info);
   }
 
-  /* One character of space after "$", independent of HTML whitespace. */
+  .arrow {
+    font-weight: var(--weight-bold);
+    color: var(--color-accent);
+  }
+
   .command {
-    margin-inline-start: var(--space-ch);
     color: var(--color-text);
   }
 
@@ -68,8 +75,9 @@ const { user, host, command, title } = Astro.props;
   }
 
   h1 {
-    font-size: var(--text-xl);
-    font-weight: var(--weight-bold);
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-heavy);
+    line-height: var(--leading-tight);
   }
 
   @keyframes blink {

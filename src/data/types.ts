@@ -40,6 +40,8 @@ export interface Profile {
     location: string;
     coursework: string[];
   };
+  /** Short availability line, e.g. "open to internships". Shown in the sidebar footer. */
+  status: string;
   /** Public Google Drive "view" link to the resume PDF. */
   resumeUrl: string;
 }

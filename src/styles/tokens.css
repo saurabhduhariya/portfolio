@@ -13,9 +13,11 @@
     'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   /* Scales with width AND height, so the banner never pushes the panes off a short screen. */
   --text-banner: clamp(1.75rem, min(6vw, 8dvh), 4.5rem);
+  --text-2xl: 1.625rem; /* page heading (h1) */
   --text-xl: 1.5rem;
   --text-lg: 1.125rem;
   --text-base: 1rem;
+  --text-md: 0.9375rem; /* 15px: file tree, secondary text */
   --text-sm: 0.875rem;
   --leading-body: 1.6;
   --leading-tight: 1.1;
@@ -41,20 +43,40 @@
   --radius: 6px;
 
   /* layout */
-  --shell-max: 80rem; /* 1280px */
-  --shell-gutter: var(--space-6);
+  --shell-max: 80rem; /* 1280px, max width of the window */
   --sidebar-min: 14rem;
   --sidebar-max: 18rem;
+
+  /* frameless shell (design v2): no window box, the screen is the terminal */
+  --shell-gutter: clamp(0px, 3vw, 3rem); /* left/right space around the centred column */
+  --shell-gutter-block: clamp(0px, 2dvh, 1rem); /* space under the status bar */
+  --shell-inset: var(--space-6); /* banner indent, lines up with the file tree text */
+  --statusbar-height: 2rem;
+  --statusbar-radius: var(--radius);
+  --chevron: 0.75rem; /* depth of the powerline arrow on status bar segments */
+  --nav-row: 2rem; /* file tree row height */
 
   /* motion */
   --duration-fast: 120ms;
   --duration-base: 200ms;
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   --cursor-blink: 1.1s;
+  --duration-pulse: 2s;
+  --duration-frame: 400ms; /* banner "boil": one frame (2 per cycle, 1.25 changes/s) */
+  --duration-print: 600ms; /* banner print-in */
+  --duration-glitch: 180ms; /* banner hover glitch, 3 frames */
+
+  /* banner: fixed height (width follows from the art), so it never stretches across the page */
+  --banner-height: clamp(2.5rem, 10dvh, 5rem); /* one line: 40-80px tall, ~420-840px wide */
+  --banner-height-stacked: clamp(4.5rem, 12dvh, 6rem); /* two lines on phones: 72-96px */
 }
 
-@media (max-width: 30rem) {
+/* Below the desktop breakpoint everything runs edge to edge. */
+@media (max-width: 56.24rem) {
   :root {
-    --shell-gutter: var(--space-3);
+    --shell-gutter: 0px;
+    --shell-gutter-block: 0px;
+    --shell-inset: var(--space-4);
+    --statusbar-radius: 0px;
   }
 }

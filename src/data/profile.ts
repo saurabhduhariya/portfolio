@@ -33,6 +33,7 @@ export const profile: Profile = {
       'Probability & Statistics',
     ],
   },
+  status: 'open to internships',
   // Update the file in Drive with "Manage versions → Upload new version" so this link never changes.
   resumeUrl: 'https://drive.google.com/file/d/1KqjNzUZSqaG8jRm_KABIp0EK9hKmcjic/view?usp=sharing',
 };
