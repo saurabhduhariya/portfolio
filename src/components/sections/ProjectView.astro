@@ -94,7 +94,12 @@ const number = String(index + 1).padStart(2, '0');
 
     <nav class="pager" aria-label="Projects">
       {previous ? (
-        <a class="step" href={href(previous)} rel="prev">
+        <a
+          class="step"
+          href={href(previous)}
+          rel="prev"
+          aria-label={`Previous project: ${previous.name}`}
+        >
           <span aria-hidden="true">←</span>
           <span class="step-name">{previous.name}</span>
         </a>
@@ -116,7 +121,7 @@ const number = String(index + 1).padStart(2, '0');
         ))}
       </ul>
       {next ? (
-        <a class="step next" href={href(next)} rel="next">
+        <a class="step next" href={href(next)} rel="next" aria-label={`Next project: ${next.name}`}>
           <span class="step-name">{next.name}</span>
           <span aria-hidden="true">→</span>
         </a>
@@ -386,8 +391,20 @@ const number = String(index + 1).padStart(2, '0');
     align-items: center;
   }
 
+  /* The link is a 24×24px touch target (WCAG 2.5.8); the visible dot is drawn inside it. */
+  .dots {
+    gap: 0;
+  }
+
   .dot-link {
-    display: block;
+    display: grid;
+    place-items: center;
+    min-inline-size: 1.5rem;
+    block-size: 1.5rem;
+  }
+
+  .dot-link::before {
+    content: '';
     inline-size: 0.6rem;
     block-size: 0.6rem;
     background-color: var(--color-border);
@@ -397,11 +414,15 @@ const number = String(index + 1).padStart(2, '0');
       inline-size var(--duration-base) var(--ease-out);
   }
 
-  .dot-link:hover {
+  .dot-link:hover::before {
     background-color: var(--color-text-muted);
   }
 
   .dot-link.current {
+    min-inline-size: 2rem;
+  }
+
+  .dot-link.current::before {
     inline-size: 1.5rem;
     background-color: var(--color-accent);
     border-radius: var(--radius);

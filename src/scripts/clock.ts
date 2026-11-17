@@ -1,5 +1,6 @@
-// Status bar clock (visitor's local time, 24h). The <time> stays hidden until this runs,
-// so visitors without JS never see a wrong or placeholder time.
+// Status bar clock (visitor's local time, 24h). The markup holds an invisible "--:--" that
+// reserves the width (so nothing shifts); this script fills in the time and marks it ready.
+// Visitors without JS see an empty yellow segment, never a wrong time.
 
 const formatter = new Intl.DateTimeFormat(undefined, {
   hour: '2-digit',
@@ -12,7 +13,7 @@ function render(): void {
   for (const el of document.querySelectorAll<HTMLTimeElement>('time[data-clock]')) {
     el.textContent = formatter.format(now);
     el.dateTime = now.toISOString();
-    el.hidden = false;
+    el.dataset['ready'] = '';
   }
 }
 

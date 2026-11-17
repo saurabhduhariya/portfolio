@@ -1,4 +1,8 @@
 ---
+// Powerline-style status bar:
+// [NORMAL]▶[file]▶  j k section · 1-7 jump  ◀[2/7]◀[14:32]
+// Chevrons are drawn with clip-path; each segment overlaps the previous one by --chevron so the
+// cut-out triangles show the neighbour's colour. scripts/mode.ts switches NORMAL ↔ VISUAL.
 export interface KeyHint {
   keys: string[];
   label: string;
@@ -14,23 +18,27 @@ interface Props {
 const { fileLabel, position, total, hints } = Astro.props;
 ---
 
-<footer class="status-bar">
-  <span class="mode">NORMAL</span>
-  <span class="file">{fileLabel}</span>
+<footer class="status-bar" data-mode-state="normal">
+  <span class="seg mode" data-mode aria-hidden="true">
+    NORMAL
+  </span>
+  <span class="seg file">
+    <span class="file-text">{fileLabel}</span>
+  </span>
   <span class="hints" aria-hidden="true">
     {hints.map((hint) => (
       <span class="hint">
-        {hint.keys.map((key) => (
-          <kbd>{key}</kbd>
-        ))}
+        <span class="keys">{hint.keys.join(' ')}</span>
         <span class="hint-label">{hint.label}</span>
       </span>
     ))}
   </span>
-  <span class="meta">
-    <span class="encoding">utf-8</span>
-    {position !== undefined && <span class="position">{`${position}/${total}`}</span>}
-    <time class="clock" data-clock hidden></time>
+  <span class="right">
+    {position !== undefined && <span class="seg position">{`${position}/${total}`}</span>}
+    <!-- "--:--" reserves the width (no layout shift); it stays invisible until clock.ts runs. -->
+    <span class="seg clock">
+      <time data-clock>--:--</time>
+    </span>
   </span>
 </footer>
 
@@ -38,62 +46,108 @@ const { fileLabel, position, total, hints } = Astro.props;
   .status-bar {
     display: flex;
     align-items: stretch;
-    overflow: hidden;
+    min-block-size: var(--statusbar-height);
     font-size: var(--text-sm);
+    white-space: nowrap;
     color: var(--color-text-muted-raised);
     background-color: var(--color-surface-raised);
-    border-radius: var(--radius);
+    border-block-start: var(--border-width) solid var(--color-border);
   }
 
-  .status-bar > span {
-    padding: var(--space-1) var(--space-3);
+  .seg {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-inline: var(--space-4);
+  }
+
+  /* ----- left: arrows point right ----- */
+  .mode,
+  .file {
+    clip-path: polygon(
+      0 0,
+      calc(100% - var(--chevron)) 0,
+      100% 50%,
+      calc(100% - var(--chevron)) 100%,
+      0 100%
+    );
   }
 
   .mode {
-    font-weight: var(--weight-bold);
+    z-index: 2;
+    padding-inline-end: calc(var(--space-4) + var(--chevron));
+    font-weight: var(--weight-heavy);
     color: var(--color-text-on-accent);
     background-color: var(--color-accent);
+    transition: background-color var(--duration-fast) var(--ease-out);
+  }
+
+  [data-mode-state='visual'] .mode {
+    background-color: var(--color-accent-strong);
   }
 
   .file {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    z-index: 1;
+    flex-shrink: 1;
+    min-inline-size: 0;
+    margin-inline-start: calc(var(--chevron) * -1);
+    padding-inline: calc(var(--space-4) + var(--chevron));
     color: var(--color-text);
+    background-color: var(--color-border);
   }
 
-  /* Key hints only make sense with a keyboard; hidden on touch-only devices and small screens. */
+  .file-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ----- middle: key hints (keyboard + mouse, wide screens only) ----- */
   .hints {
     display: none;
-    gap: var(--space-4);
+    gap: var(--space-6);
     align-items: center;
-    white-space: nowrap;
+    padding-inline: var(--space-4);
   }
 
   .hint {
     display: inline-flex;
-    gap: var(--space-1);
-    align-items: center;
+    gap: var(--space-2);
   }
 
-  .hint kbd {
+  .keys {
+    font-weight: var(--weight-bold);
     color: var(--color-text);
-    background-color: var(--color-surface);
   }
 
-  .hint-label {
-    margin-inline-start: var(--space-1);
-  }
-
-  .meta {
+  /* ----- right: arrows point left ----- */
+  .right {
     display: flex;
-    gap: var(--space-4);
+    flex-shrink: 0;
     margin-inline-start: auto;
-    white-space: nowrap;
+  }
+
+  .position,
+  .clock {
+    padding-inline: calc(var(--space-4) + var(--chevron)) var(--space-4);
+    clip-path: polygon(var(--chevron) 0, 100% 0, 100% 100%, var(--chevron) 100%, 0 50%);
+  }
+
+  .position {
+    color: var(--color-text);
+    background-color: var(--color-border);
   }
 
   .clock {
-    color: var(--color-text);
+    z-index: 1;
+    margin-inline-start: calc(var(--chevron) * -1);
+    font-weight: var(--weight-heavy);
+    color: var(--color-text-on-accent);
+    background-color: var(--color-accent);
+  }
+
+  /* Placeholder keeps its width but is invisible until the real time is set. */
+  .clock time:not([data-ready]) {
+    visibility: hidden;
   }
 
   @media (min-width: 56.25rem) and (hover: hover) and (pointer: fine) {
@@ -103,8 +157,21 @@ const { fileLabel, position, total, hints } = Astro.props;
   }
 
   @media (max-width: 30rem) {
-    .encoding {
-      display: none;
+    .seg {
+      padding-inline: var(--space-3);
+    }
+
+    .mode {
+      padding-inline-end: calc(var(--space-3) + var(--chevron));
+    }
+
+    .file {
+      padding-inline: calc(var(--space-3) + var(--chevron));
+    }
+
+    .position,
+    .clock {
+      padding-inline: calc(var(--space-3) + var(--chevron)) var(--space-3);
     }
   }
 </style>
