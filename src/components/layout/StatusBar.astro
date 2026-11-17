@@ -1,6 +1,6 @@
 ---
 // Powerline-style status bar:
-// [NORMAL]▶[file]▶  j k section · 1-7 jump  ◀[2/7]◀[14:32]
+// [NORMAL]▶[file]▶  j k section · 1-7 jump · f effects  ◀[2/7]◀[fx · 14:32]
 // Chevrons are drawn with clip-path; each segment overlaps the previous one by --chevron so the
 // cut-out triangles show the neighbour's colour. scripts/mode.ts switches NORMAL ↔ VISUAL.
 export interface KeyHint {
@@ -35,8 +35,22 @@ const { fileLabel, position, total, hints } = Astro.props;
   </span>
   <span class="right">
     {position !== undefined && <span class="seg position">{`${position}/${total}`}</span>}
-    <!-- "--:--" reserves the width (no layout shift); it stays invisible until clock.ts runs. -->
+    <!-- fx: toggles animated effects (scripts/effects.ts); also the `f` key.
+         "--:--" reserves the clock width (no layout shift); invisible until clock.ts runs. -->
     <span class="seg clock">
+      <button
+        class="fx"
+        type="button"
+        data-fx-toggle
+        aria-pressed="true"
+        aria-label="Animated effects"
+        title="Animated effects (f)"
+      >
+        fx
+      </button>
+      <span class="sep" aria-hidden="true">
+        ·
+      </span>
       <time data-clock>--:--</time>
     </span>
   </span>
@@ -148,6 +162,38 @@ const { fileLabel, position, total, hints } = Astro.props;
   /* Placeholder keeps its width but is invisible until the real time is set. */
   .clock time:not([data-ready]) {
     visibility: hidden;
+  }
+
+  .clock {
+    gap: var(--space-2);
+  }
+
+  /* fx toggle: plain text in the segment, a 24px+ touch target, struck through when off.
+     Line-through keeps the width, so toggling never shifts the bar. */
+  .fx {
+    min-inline-size: 1.75rem;
+    min-block-size: 1.5rem;
+    padding: 0 var(--space-1);
+    font-weight: var(--weight-heavy);
+    color: inherit;
+    cursor: pointer;
+    background: none;
+    border: 0;
+    border-radius: var(--radius);
+  }
+
+  .fx:hover {
+    text-decoration: underline;
+  }
+
+  .fx[aria-pressed='false'] {
+    text-decoration: line-through;
+  }
+
+  /* The default accent focus ring is invisible on the yellow segment. */
+  .fx:focus-visible {
+    outline-color: var(--color-text-on-accent);
+    outline-offset: 0;
   }
 
   @media (min-width: 56.25rem) and (hover: hover) and (pointer: fine) {

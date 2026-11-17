@@ -51,6 +51,7 @@ const keyHints: KeyHint[] = [
   { keys: ['j', 'k'], label: 'section' },
   { keys: [`1-${navItems.length}`], label: 'jump' },
   ...(projectPager ? [{ keys: ['h', 'l'], label: 'project' }] : []),
+  { keys: ['f'], label: 'effects' },
 ];
 
 // Only the content pane animates between pages; the banner, file tree and status bar swap
@@ -116,6 +117,8 @@ const profileUrls = contacts
     <link rel="manifest" href="/favicon/site.webmanifest" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="preload" href={fontLatinUrl} as="font" type="font/woff2" crossorigin />
+    <!-- Blocking on purpose (~400 bytes): sets data-fx before the first paint. -->
+    <script is:inline src="/scripts/fx-init.js"></script>
     <ClientRouter />
 
     {isHome && (
@@ -184,6 +187,7 @@ const profileUrls = contacts
       import '@/scripts/clock';
       import '@/scripts/mode';
       import '@/scripts/banner';
+      import '@/scripts/effects';
     </script>
   </body>
 </html>
@@ -198,7 +202,7 @@ const profileUrls = contacts
     block-size: 100vh;
     block-size: 100dvh;
     padding: 0 var(--shell-gutter) var(--shell-gutter-block);
-    background-color: var(--color-surface);
+    /* Transparent: the body colour and the background effects (styles/effects.css) show through. */
   }
 
   /* Named areas, so rows that are hidden at some widths (tabs, sidebar) never shift others. */

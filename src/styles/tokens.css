@@ -65,6 +65,12 @@
   --duration-frame: 400ms; /* banner "boil": one frame (2 per cycle, 1.25 changes/s) */
   --duration-print: 600ms; /* banner print-in */
   --duration-glitch: 180ms; /* banner hover glitch, 3 frames */
+  --duration-drift: 40s; /* background glows, one way (then back: alternate) */
+  --duration-grain: 1s; /* film grain: 10 positions per second */
+
+  /* background effects */
+  --grain-opacity: 0.05;
+  --dot-gap: 24px;
 
   /* banner: fixed height (width follows from the art), so it never stretches across the page */
   --banner-height: clamp(2.5rem, 10dvh, 5rem); /* one line: 40-80px tall, ~420-840px wide */

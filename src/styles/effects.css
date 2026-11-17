@@ -1,0 +1,116 @@
+/*
+ * Background effects behind the frameless shell (design v2 §4.4).
+ *
+ *   html::before  three soft glows (yellow top-left, aqua bottom-right, pink top), slow drift
+ *   body::before  dot grid, strongest at the screen edges, fading out behind the content
+ *   html::after   film grain, jumps between 10 offsets per second
+ *
+ * All three are fixed, behind the content (z-index -1) and ignore the pointer. Only transform
+ * and opacity animate, so the browser composites them and never repaints per frame.
+ * html[data-fx='off'] (scripts/effects.ts) stops the drift and hides the grain.
+ */
+
+html::before,
+html::after,
+body::before {
+  position: fixed;
+  z-index: -1;
+  content: '';
+  pointer-events: none;
+}
+
+/* 1. Glows. Oversized so the drift never shows an edge; centres sit near the corners so the
+   strongest tint stays away from body text. */
+html::before {
+  inset: -15%;
+  background-image:
+    radial-gradient(40% 45% at 10% 8%, var(--glow-1), transparent 70%),
+    radial-gradient(45% 50% at 92% 95%, var(--glow-2), transparent 70%),
+    radial-gradient(35% 40% at 62% 0%, var(--glow-3), transparent 70%);
+  animation: fx-drift var(--duration-drift) ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* 2. Dot grid, masked so it is visible at the edges and gutters, not behind text. */
+body::before {
+  inset: 0;
+  background-image: radial-gradient(circle, var(--color-dots) 1px, transparent 1.5px);
+  background-size: var(--dot-gap) var(--dot-gap);
+  mask-image: radial-gradient(ellipse 65% 70% at 50% 45%, transparent 45%, black 100%);
+}
+
+/* 3. Grain: tiny tiled SVG noise (white specks, alpha from the noise). The layer is 200 % of
+   the screen; offsets stay under 25 % so no edge ever shows. */
+html::after {
+  inset: -50%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1.4 0 0 0 -.5'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  opacity: var(--grain-opacity);
+  animation: fx-grain var(--duration-grain) steps(10) infinite;
+  will-change: transform;
+}
+
+/* Effects off: glows stay (static), grain goes. */
+:root[data-fx='off']::before {
+  animation: none;
+}
+
+:root[data-fx='off']::after {
+  display: none;
+}
+
+@keyframes fx-drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  to {
+    transform: translate3d(-4%, 3%, 0) scale(1.06);
+  }
+}
+
+@keyframes fx-grain {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  10% {
+    transform: translate3d(-3%, -6%, 0);
+  }
+
+  20% {
+    transform: translate3d(-9%, 3%, 0);
+  }
+
+  30% {
+    transform: translate3d(4%, -13%, 0);
+  }
+
+  40% {
+    transform: translate3d(-5%, 14%, 0);
+  }
+
+  50% {
+    transform: translate3d(-12%, 6%, 0);
+  }
+
+  60% {
+    transform: translate3d(10%, 2%, 0);
+  }
+
+  70% {
+    transform: translate3d(1%, 9%, 0);
+  }
+
+  80% {
+    transform: translate3d(13%, -4%, 0);
+  }
+
+  90% {
+    transform: translate3d(-7%, -11%, 0);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}

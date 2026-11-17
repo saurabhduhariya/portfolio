@@ -39,5 +39,11 @@
   --color-banner-fill: var(--gruvbox-yellow);
   --color-banner-shadow: var(--gruvbox-orange);
 
+  /* Background effects (styles/effects.css). Kept faint so text contrast stays AA on top. */
+  --glow-1: color-mix(in srgb, var(--gruvbox-yellow) 6%, transparent);
+  --glow-2: color-mix(in srgb, var(--gruvbox-aqua) 5%, transparent);
+  --glow-3: color-mix(in srgb, var(--gruvbox-purple) 4%, transparent);
+  --color-dots: color-mix(in srgb, var(--gruvbox-bg2) 55%, transparent);
+
   color-scheme: dark;
 }

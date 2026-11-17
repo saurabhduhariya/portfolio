@@ -1,4 +1,5 @@
-/* Order matters: tokens → theme → base. */
+/* Order matters: tokens → theme → base → effects. */
 @import './tokens.css';
 @import './themes/gruvbox.css';
 @import './base.css';
+@import './effects.css';

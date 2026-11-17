@@ -145,6 +145,17 @@ kbd {
   }
 }
 
+/* Effects off (`f` key / fx button, scripts/effects.ts): the blinking cursor and the sidebar
+   pulse stop too, so nothing on the page keeps moving (WCAG 2.2.2 Pause, Stop, Hide). The
+   banner and background handle data-fx in their own files. */
+:root[data-fx='off'] .cursor,
+:root[data-fx='off'] .pulse {
+  animation: none;
+}
+
+/* Reduced motion: everything is still, unless the visitor explicitly turned effects on with
+   `f` (scripts/effects.ts only sets data-fx="on" under reduced motion when they chose it).
+   Page transitions stay off either way. */
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*),
   ::view-transition-old(*),
@@ -152,9 +163,11 @@ kbd {
     animation: none !important;
   }
 
-  *,
-  *::before,
-  *::after {
+  :root:not([data-fx='on'])::before,
+  :root:not([data-fx='on'])::after,
+  :root:not([data-fx='on']) *,
+  :root:not([data-fx='on']) *::before,
+  :root:not([data-fx='on']) *::after {
     animation-duration: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0ms !important;
