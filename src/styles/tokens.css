@@ -75,6 +75,8 @@
   /* banner: fixed height (width follows from the art), so it never stretches across the page */
   --banner-height: clamp(2.5rem, 10dvh, 5rem); /* one line: 40-80px tall, ~420-840px wide */
   --banner-height-stacked: clamp(4.5rem, 12dvh, 6rem); /* two lines on phones: 72-96px */
+  /* Space above the banner: grows a little on tall screens (24px → 40px at 1080px tall). */
+  --banner-gap-top: clamp(var(--space-6), 4dvh, 2.5rem);
 }
 
 /* Below the desktop breakpoint everything runs edge to edge. */

@@ -1,5 +1,8 @@
 ---
 import ShellLayout from '@/layouts/ShellLayout.astro';
+
+const MESSAGE = 'No such file or directory.';
+const PREFIX = 'bash: cd: ./missing-page:';
 ---
 
 <ShellLayout
@@ -8,11 +11,20 @@ import ShellLayout from '@/layouts/ShellLayout.astro';
   command="cd ./missing-page"
   noindex
 >
+  <!-- The error line glitches once on load (aqua/pink copies), instead of the banner print-in.
+       The copies are aria-hidden; screen readers read the real line once. -->
   <p class="error">
-    <span class="prefix" aria-hidden="true">
-      bash: cd:
-    </span>{' '}
-    No such file or directory.
+    <span class="text">
+      <span class="prefix" aria-hidden="true">
+        {PREFIX}
+      </span>
+      <span>{MESSAGE}</span>
+    </span>
+    <span class="err-ghost err-ghost-a" aria-hidden="true">{`${PREFIX} ${MESSAGE}`}</span>
+    <span class="err-ghost err-ghost-b" aria-hidden="true">{`${PREFIX} ${MESSAGE}`}</span>
+  </p>
+  <p class="code" aria-hidden="true">
+    exit status 404
   </p>
   <p>
     The page you are looking for does not exist. Pick a section from the menu, or go back to{' '}
@@ -21,14 +33,145 @@ import ShellLayout from '@/layouts/ShellLayout.astro';
 </ShellLayout>
 
 <style>
+  /* This page plays its own glitch, so the banner skips its print-in here. */
+  :global(:root) :global(.banner .art) {
+    animation: none;
+  }
+
   /* Gruvbox red (--color-danger) is only 4.28:1 on --color-surface, below WCAG AA, so the
      shell-error prefix uses orange (5.8:1) and the message uses body text. */
   .error {
-    margin-block-end: var(--space-4);
+    position: relative;
+    inline-size: fit-content;
+    max-inline-size: 100%;
     font-weight: var(--weight-bold);
+  }
+
+  .text {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-ch);
   }
 
   .prefix {
     color: var(--color-accent-strong);
+  }
+
+  .code {
+    margin-block: var(--space-2) var(--space-6);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .err-ghost {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .err-ghost-a {
+    color: var(--color-info);
+    animation: glitch-a var(--duration-glitch) steps(1, end) 300ms both;
+  }
+
+  .err-ghost-b {
+    color: var(--color-tag);
+    animation: glitch-b var(--duration-glitch) steps(1, end) 300ms both;
+  }
+
+  .error:hover .err-ghost-a {
+    animation-name: glitch-a-hover;
+    animation-delay: 0ms;
+  }
+
+  .error:hover .err-ghost-b {
+    animation-name: glitch-b-hover;
+    animation-delay: 0ms;
+  }
+
+  :global(:root[data-fx='off']) .err-ghost {
+    animation: none;
+  }
+
+  @keyframes glitch-a {
+    0% {
+      opacity: 0.85;
+      transform: translate(-3px, 0);
+    }
+
+    33% {
+      transform: translate(2px, -1px);
+    }
+
+    66% {
+      transform: translate(-1px, 1px);
+    }
+
+    100% {
+      opacity: 0;
+      transform: none;
+    }
+  }
+
+  @keyframes glitch-b {
+    0% {
+      opacity: 0.85;
+      transform: translate(3px, 1px);
+    }
+
+    33% {
+      transform: translate(-2px, 1px);
+    }
+
+    66% {
+      transform: translate(1px, -1px);
+    }
+
+    100% {
+      opacity: 0;
+      transform: none;
+    }
+  }
+
+  /* Same frames under new names, so hovering restarts the animation. */
+  @keyframes glitch-a-hover {
+    0% {
+      opacity: 0.85;
+      transform: translate(-3px, 0);
+    }
+
+    33% {
+      transform: translate(2px, -1px);
+    }
+
+    66% {
+      transform: translate(-1px, 1px);
+    }
+
+    100% {
+      opacity: 0;
+      transform: none;
+    }
+  }
+
+  @keyframes glitch-b-hover {
+    0% {
+      opacity: 0.85;
+      transform: translate(3px, 1px);
+    }
+
+    33% {
+      transform: translate(-2px, 1px);
+    }
+
+    66% {
+      transform: translate(1px, -1px);
+    }
+
+    100% {
+      opacity: 0;
+      transform: none;
+    }
   }
 </style>

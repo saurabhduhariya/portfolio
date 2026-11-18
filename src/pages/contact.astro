@@ -1,9 +1,10 @@
 ---
 import ContactList from '@/components/sections/ContactList.astro';
 import { contactIntro, contacts } from '@/data/contacts';
+import { profile } from '@/data/profile';
 import ShellLayout from '@/layouts/ShellLayout.astro';
 ---
 
 <ShellLayout navId="contact">
-  <ContactList intro={contactIntro} contacts={contacts} />
+  <ContactList intro={contactIntro} contacts={contacts} status={profile.status} />
 </ShellLayout>
