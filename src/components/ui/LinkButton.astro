@@ -1,0 +1,77 @@
+---
+// Button-styled link. External links (http/https) open in a new tab and end in "↗";
+// internal links end in "→". Gaps come from flex `gap`, not HTML whitespace.
+interface Props {
+  href: string;
+  variant?: 'primary' | 'default';
+  size?: 'md' | 'sm';
+  /** Screen-reader hint. Defaults to "(opens in a new tab)" for external links. */
+  srHint?: string;
+}
+
+const { href, variant = 'default', size = 'md', srHint } = Astro.props;
+const external = /^https?:\/\//.test(href);
+const hint = srHint ?? (external ? '(opens in a new tab)' : undefined);
+---
+
+<a
+  class:list={['link-button', variant, size]}
+  href={href}
+  {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}
+>
+  <slot />
+  <span class="mark" aria-hidden="true">
+    {external ? '↗' : '→'}
+  </span>
+  {hint && <span class="visually-hidden">{hint}</span>}
+</a>
+
+<style>
+  .link-button {
+    display: inline-flex;
+    gap: var(--space-2);
+    align-items: center;
+    color: var(--color-text);
+    text-decoration: none;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius);
+    transition:
+      border-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out),
+      background-color var(--duration-fast) var(--ease-out);
+  }
+
+  .md {
+    padding: var(--space-2) var(--space-4);
+  }
+
+  .sm {
+    padding: var(--space-1) var(--space-3);
+  }
+
+  .link-button:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .mark {
+    color: var(--color-accent);
+  }
+
+  .primary {
+    font-weight: var(--weight-bold);
+    color: var(--color-text-on-accent);
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .primary .mark {
+    color: inherit;
+  }
+
+  .primary:hover {
+    color: var(--color-text-on-accent);
+    background-color: var(--color-accent-strong);
+    border-color: var(--color-accent-strong);
+  }
+</style>

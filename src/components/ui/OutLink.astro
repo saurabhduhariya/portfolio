@@ -1,0 +1,36 @@
+---
+// Inline link to another site: text in the surrounding colour + a yellow "↗", opens in a new
+// tab. One style for every external text link (achievements, hobbies, education).
+interface Props {
+  href: string;
+}
+
+const { href } = Astro.props;
+---
+
+<a class="out-link" href={href} target="_blank" rel="noreferrer">
+  <slot />
+  <span class="mark" aria-hidden="true">
+    ↗
+  </span>
+  <span class="visually-hidden">(opens in a new tab)</span>
+</a>
+
+<style>
+  .out-link {
+    color: inherit;
+    text-decoration: none;
+    text-underline-offset: 0.2em;
+  }
+
+  .out-link:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+
+  /* Margin, not a space: Astro collapses whitespace between elements. */
+  .mark {
+    margin-inline-start: 0.5ch;
+    color: var(--color-accent);
+  }
+</style>

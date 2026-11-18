@@ -1,6 +1,8 @@
 import type { SkillGroup } from './types';
 
-// Source: resume, "Technical Skills". `icon` is a simple-icons slug; omitted where none exists.
+// Source: resume, "Technical Skills".
+// `icon`: simple-icons slug (the tile colour follows the brand colour).
+// `glyph`: generic icon when there is no brand logo. `short`: tile label for long names.
 export const skillGroups: SkillGroup[] = [
   {
     title: 'Languages',
@@ -9,7 +11,7 @@ export const skillGroups: SkillGroup[] = [
       { name: 'C', icon: 'c' },
       { name: 'Python', icon: 'python' },
       { name: 'Java', icon: 'openjdk' },
-      { name: 'SQL' },
+      { name: 'SQL', glyph: 'database' },
       { name: 'JavaScript', icon: 'javascript' },
       { name: 'TypeScript', icon: 'typescript' },
     ],
@@ -19,13 +21,13 @@ export const skillGroups: SkillGroup[] = [
     items: [
       { name: 'NumPy', icon: 'numpy' },
       { name: 'Pandas', icon: 'pandas' },
-      { name: 'Scikit-learn', icon: 'scikitlearn' },
-      { name: 'Matplotlib' },
+      { name: 'Scikit-learn', short: 'sklearn', icon: 'scikitlearn' },
+      { name: 'Matplotlib', glyph: 'chart' },
       { name: 'TensorFlow', icon: 'tensorflow' },
       { name: 'PyTorch', icon: 'pytorch' },
       { name: 'LangChain', icon: 'langchain' },
       { name: 'LangGraph', icon: 'langgraph' },
-      { name: 'SetFit' },
+      { name: 'SetFit', glyph: 'sparkles' },
     ],
   },
   {
@@ -37,9 +39,9 @@ export const skillGroups: SkillGroup[] = [
       { name: 'Node.js', icon: 'nodedotjs' },
       { name: 'Express', icon: 'express' },
       { name: 'FastAPI', icon: 'fastapi' },
-      { name: 'Tailwind CSS', icon: 'tailwindcss' },
-      { name: 'REST' },
-      { name: 'WebSockets' },
+      { name: 'Tailwind CSS', short: 'Tailwind', icon: 'tailwindcss' },
+      { name: 'REST', glyph: 'api' },
+      { name: 'WebSockets', glyph: 'plug' },
     ],
   },
   {
@@ -49,7 +51,7 @@ export const skillGroups: SkillGroup[] = [
       { name: 'SQLite', icon: 'sqlite' },
       { name: 'Supabase', icon: 'supabase' },
       { name: 'MongoDB', icon: 'mongodb' },
-      { name: 'Pinecone' },
+      { name: 'Pinecone', glyph: 'tree' },
     ],
   },
   {

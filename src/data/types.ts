@@ -40,16 +40,31 @@ export interface Profile {
     location: string;
     coursework: string[];
   };
-  /** Short availability line, e.g. "open to internships". Shown in the sidebar footer. */
+  /** Short availability line, e.g. "open to internships". Sidebar footer, About, Contact. */
   status: string;
+  /** Optional "currently …" line in the About facts, e.g. "building a CLI for X". Hidden if unset. */
+  currently?: string;
   /** Public Google Drive "view" link to the resume PDF. */
   resumeUrl: string;
 }
 
+/** Generic icon for skills that have no brand logo in simple-icons. */
+export type SkillGlyph = 'database' | 'chart' | 'sparkles' | 'api' | 'plug' | 'tree';
+
+export interface Skill {
+  /** Full name: tooltip and screen readers. */
+  name: string;
+  /** Shorter label for the tile when the full name is long, e.g. "sklearn". */
+  short?: string;
+  /** simple-icons slug, e.g. "typescript". The tile colour comes from the brand colour. */
+  icon?: string;
+  /** Used when there is no brand logo. */
+  glyph?: SkillGlyph;
+}
+
 export interface SkillGroup {
   title: string;
-  /** `icon` is a simple-icons slug, e.g. "typescript". Omit when no logo exists. */
-  items: { name: string; icon?: string }[];
+  items: Skill[];
 }
 
 export interface ProjectLink {

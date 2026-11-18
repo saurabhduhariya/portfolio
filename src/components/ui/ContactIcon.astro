@@ -8,34 +8,29 @@ interface Props {
 }
 
 const { icon } = Astro.props;
+
+// simple-icons and Lucide no longer ship a LinkedIn logo. This is a generic filled "in" glyph
+// in the same 24×24 filled style as the GitHub icon (rounded square with the letters cut out).
+const LINKEDIN_PATH =
+  'M5 2h14a3 3 0 0 1 3 3v14a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3z' +
+  'M7.5 5.6a1.65 1.65 0 1 0 0 3.3a1.65 1.65 0 1 0 0-3.3z' +
+  'M6.1 10h2.8v8.4H6.1z' +
+  'M10.8 10h2.7v1.2c.5-.9 1.6-1.45 2.95-1.45 2.3 0 3.45 1.45 3.45 4.05v4.6h-2.8v-4.1' +
+  'c0-1.25-.45-1.95-1.55-1.95s-1.95.8-1.95 2.1v3.95h-2.8z';
 ---
 
 {icon === 'mail' && <Mail class="contact-icon" size="1em" aria-hidden="true" />}
 {icon === 'github' && <BrandIcon slug="github" />}
-{
-  /* simple-icons and Lucide no longer ship a LinkedIn logo, so use a text monogram. */
-  icon === 'linkedin' && (
-    <span class="monogram" aria-hidden="true">
-      in
-    </span>
-  )
-}
+{icon === 'linkedin' && (
+  <svg class="contact-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d={LINKEDIN_PATH} fill="currentColor" fill-rule="evenodd" />
+  </svg>
+)}
 
 <style>
   .contact-icon {
     flex-shrink: 0;
-  }
-
-  .monogram {
-    display: inline-grid;
-    place-items: center;
-    /* 1.4em of a 0.7em font ≈ 1em, matching the other icons. */
-    inline-size: 1.4em;
-    block-size: 1.4em;
-    font-size: 0.7em;
-    font-weight: var(--weight-heavy);
-    line-height: 1;
-    border: calc(var(--border-width) * 1.5) solid currentColor;
-    border-radius: var(--border-width);
+    inline-size: 1em;
+    block-size: 1em;
   }
 </style>
