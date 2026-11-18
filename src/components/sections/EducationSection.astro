@@ -1,7 +1,7 @@
 ---
-import ExternalLink from '@lucide/astro/icons/external-link';
+// Education: school card with a CGPA meter, then coursework as an `ls`-style list.
+import OutLink from '@/components/ui/OutLink.astro';
 import SectionLabel from '@/components/ui/SectionLabel.astro';
-import TagList from '@/components/ui/TagList.astro';
 import type { Profile } from '@/data/types';
 
 interface Props {
@@ -10,9 +10,16 @@ interface Props {
 
 const { education } = Astro.props;
 
+// "8.40 / 10" → 10 blocks: 8 full, the 9th 40 % full, the 10th empty.
+const BLOCKS = 10;
+const [value = 0, max = 10] = education.cgpa.split('/').map((part) => Number.parseFloat(part));
+const ratio = max > 0 ? Math.min(Math.max(value / max, 0), 1) : 0;
+const fills = Array.from({ length: BLOCKS }, (_, i) =>
+  Math.round(Math.min(Math.max(ratio * BLOCKS - i, 0), 1) * 100),
+);
+
 const details = [
   { label: 'degree', value: education.degree },
-  { label: 'cgpa', value: education.cgpa },
   { label: 'graduation', value: education.graduation },
   { label: 'location', value: education.location },
 ];
@@ -21,13 +28,20 @@ const details = [
 <div class="education">
   <section class="school-card" aria-labelledby="school-heading">
     <h2 id="school-heading" class="school">
-      <a href={education.schoolUrl} target="_blank" rel="noreferrer">
-        {education.school}
-        <ExternalLink size="0.8em" aria-hidden="true" />
-        <span class="visually-hidden">(opens in a new tab)</span>
-      </a>
+      <OutLink href={education.schoolUrl}>{education.school}</OutLink>
     </h2>
     <dl>
+      <div class="row">
+        <dt>cgpa</dt>
+        <dd class="cgpa">
+          <span class="meter" aria-hidden="true">
+            {fills.map((fill) => (
+              <span class="block" style={`--fill: ${fill}%`} />
+            ))}
+          </span>
+          <span class="cgpa-value">{education.cgpa}</span>
+        </dd>
+      </div>
       {details.map((detail) => (
         <div class="row">
           <dt>{detail.label}</dt>
@@ -37,21 +51,30 @@ const details = [
     </dl>
   </section>
 
-  <section aria-labelledby="coursework-heading">
+  <section class="coursework" aria-labelledby="coursework-heading">
     <SectionLabel id="coursework-heading">Relevant coursework</SectionLabel>
-    <TagList items={education.coursework} label="Relevant coursework" />
+    <ul class="courses" role="list">
+      {education.coursework.map((course) => (
+        <li>
+          <span class="marker" aria-hidden="true">
+            ▸
+          </span>
+          <span>{course}</span>
+        </li>
+      ))}
+    </ul>
   </section>
 </div>
 
 <style>
   .education {
     display: grid;
-    gap: var(--space-6);
+    gap: var(--space-8);
   }
 
   .school-card {
     display: grid;
-    gap: var(--space-3);
+    gap: var(--space-4);
     padding: var(--space-4) var(--space-6);
     background-color: var(--color-bg);
     border: var(--border-width) solid var(--color-border);
@@ -64,22 +87,9 @@ const details = [
     font-weight: var(--weight-bold);
   }
 
-  .school a {
-    display: inline-flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    align-items: center;
-    color: var(--color-text);
-    text-decoration: none;
-  }
-
-  .school a:hover {
-    color: var(--color-accent);
-  }
-
   dl {
     display: grid;
-    gap: var(--space-1);
+    gap: var(--space-2);
   }
 
   .row {
@@ -102,6 +112,77 @@ const details = [
     margin: 0;
   }
 
+  /* ---------- CGPA meter ---------- */
+  .cgpa {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-3);
+    align-items: center;
+  }
+
+  .meter {
+    display: inline-flex;
+    gap: 3px;
+  }
+
+  .block {
+    inline-size: 0.6rem;
+    block-size: 0.9rem;
+    background: linear-gradient(
+      to right,
+      var(--color-success) var(--fill),
+      var(--color-border) var(--fill)
+    );
+    border-radius: 1px;
+  }
+
+  .cgpa-value {
+    font-weight: var(--weight-bold);
+    color: var(--color-success);
+  }
+
+  /* ---------- coursework, `ls` style ---------- */
+  .coursework {
+    container-type: inline-size;
+  }
+
+  .courses {
+    display: grid;
+    gap: var(--space-2) var(--space-8);
+  }
+
+  .courses li {
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  .marker {
+    color: var(--color-info);
+  }
+
+  @container (min-width: 36rem) {
+    .courses {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* Short screens: tighter rhythm so the page fits without scrolling. */
+  @media (max-height: 46rem) {
+    .education {
+      gap: var(--space-4);
+    }
+
+    .school-card {
+      gap: var(--space-2);
+      padding-block: var(--space-3);
+    }
+
+    dl,
+    .courses {
+      row-gap: var(--space-1);
+    }
+  }
+
   @media (max-width: 30rem) {
     .school-card {
       padding: var(--space-3) var(--space-4);
@@ -110,7 +191,6 @@ const details = [
     .row {
       grid-template-columns: minmax(0, 1fr);
       gap: 0;
-      margin-block-end: var(--space-2);
     }
   }
 </style>

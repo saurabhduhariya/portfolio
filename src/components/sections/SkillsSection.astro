@@ -1,9 +1,22 @@
 ---
-// Skills as a compact two-column table: group label on the left, wrapping chips on the right.
-// Each group is one or two lines tall, so the whole list fits on a laptop screen without
-// scrolling. Each group has one theme colour for its label and icons.
+// Skills as icon tiles (inspired by the reference site's "displayskills" grid):
+// a coloured logo on top, the name underneath, one row of tiles per group.
+//  - Tile colour = the brand's logo colour mapped to the nearest Gruvbox tone (lib/brand.ts),
+//    so the page is colourful but stays inside the theme. Black/white logos use the text colour.
+//  - Skills without a brand logo get a matching Lucide glyph.
+//  - Compact tiles by default, large tiles on big screens, chips (icon left of the name) on
+//    short screens, so the page fits without scrolling on laptops and tablets.
+//  - Tile labels are 13px (an exception to the 14px minimum, see docs/DESIGN_SYSTEM.md) so the
+//    longest names ("JavaScript", "PostgreSQL") fit a tile without being cut.
+import ArrowLeftRight from '@lucide/astro/icons/arrow-left-right';
+import ChartLine from '@lucide/astro/icons/chart-line';
+import Database from '@lucide/astro/icons/database';
+import PlugZap from '@lucide/astro/icons/plug-zap';
+import Sparkles from '@lucide/astro/icons/sparkles';
+import TreePine from '@lucide/astro/icons/tree-pine';
 import BrandIcon from '@/components/ui/BrandIcon.astro';
-import type { SkillGroup } from '@/data/types';
+import type { SkillGlyph, SkillGroup } from '@/data/types';
+import { brandIcon, TONE_VAR, toneForHex, type Tone } from '@/lib/brand';
 
 interface Props {
   groups: readonly SkillGroup[];
@@ -11,114 +24,195 @@ interface Props {
 
 const { groups } = Astro.props;
 
-// Semantic theme tokens, cycled per group. All pass WCAG AA on --color-surface.
-const tones = ['accent', 'info', 'success', 'tag', 'accent-strong'] as const;
+const GLYPHS = {
+  database: { component: Database, tone: 'blue' },
+  chart: { component: ChartLine, tone: 'blue' },
+  sparkles: { component: Sparkles, tone: 'purple' },
+  api: { component: ArrowLeftRight, tone: 'aqua' },
+  plug: { component: PlugZap, tone: 'yellow' },
+  tree: { component: TreePine, tone: 'green' },
+} as const satisfies Record<SkillGlyph, { component: unknown; tone: Tone }>;
+
+function toneOf(icon: string | undefined, glyph: SkillGlyph | undefined): Tone {
+  const brand = icon ? brandIcon(icon) : undefined;
+  if (brand) return toneForHex(brand.hex);
+  if (glyph) return GLYPHS[glyph].tone;
+  return 'text';
+}
 ---
 
 <div class="skills">
   {groups.map((group, index) => (
-    <section
-      class="group"
-      style={`--tone: var(--color-${tones[index % tones.length]})`}
-      aria-labelledby={`skills-${index}`}
-    >
-      <h2 id={`skills-${index}`} class="label">
+    <section class="group" aria-labelledby={`skills-${index}`}>
+      <h2 id={`skills-${index}`} class="heading">
         <span class="marker" aria-hidden="true">
           ▸
         </span>
         {group.title}
       </h2>
-      <ul class="items" role="list">
-        {group.items.map((item) => (
-          <li class="item">
-            {item.icon && <BrandIcon slug={item.icon} />}
-            <span>{item.name}</span>
-          </li>
-        ))}
+      <ul class="tiles" role="list">
+        {group.items.map((item) => {
+          const Glyph = item.glyph ? GLYPHS[item.glyph].component : undefined;
+          return (
+            <li
+              class="tile"
+              style={`--tone: var(${TONE_VAR[toneOf(item.icon, item.glyph)]})`}
+              title={item.short ? item.name : undefined}
+            >
+              <span class="icon">
+                {item.icon ? (
+                  <BrandIcon slug={item.icon} />
+                ) : (
+                  Glyph && <Glyph size="1em" aria-hidden="true" />
+                )}
+              </span>
+              {item.short ? (
+                <>
+                  <span class="name" aria-hidden="true">
+                    {item.short}
+                  </span>
+                  <span class="visually-hidden">{item.name}</span>
+                </>
+              ) : (
+                <span class="name">{item.name}</span>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </section>
   ))}
 </div>
 
 <style>
-  /* Container query: the layout follows the pane's width, not the window's. */
+  /* Default: compact tiles (laptops ≤ 800px tall, tablets, phones). */
   .skills {
+    --tile-min: 5.25rem;
+    --tile-icon: 1.25rem;
+    --tile-pad: var(--space-1);
+    --tile-gap: var(--space-2);
+
     display: grid;
-    container-type: inline-size;
+    gap: var(--space-3);
   }
 
   .group {
     display: grid;
-    grid-template-columns: 10rem minmax(0, 1fr);
-    gap: var(--space-4);
-    align-items: start;
-    padding-block: var(--space-3);
-    border-block-end: var(--border-width) dashed var(--color-border);
+    gap: var(--space-1);
   }
 
-  .group:first-child {
-    padding-block-start: 0;
-  }
-
-  .group:last-child {
-    border-block-end: 0;
-  }
-
-  .label {
+  /* "▸ Languages ┄┄┄┄┄┄": the dashed rule fills the rest of the line. */
+  .heading {
     display: flex;
     gap: var(--space-2);
-    align-items: baseline;
-    padding-block-start: var(--space-1);
+    align-items: center;
     font-size: var(--text-sm);
     font-weight: var(--weight-bold);
-    color: var(--tone);
+    color: var(--color-text);
+  }
+
+  .heading::after {
+    flex: 1;
+    content: '';
+    border-block-start: var(--border-width) dashed var(--color-border);
   }
 
   .marker {
-    transition: transform var(--duration-fast) var(--ease-out);
+    color: var(--color-accent);
   }
 
-  .group:hover .marker {
-    transform: translateX(2px);
+  /* Same column width in every group, so tiles line up from one group to the next. */
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--tile-min), 1fr));
+    gap: var(--tile-gap);
   }
 
-  .items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-  }
-
-  .item {
-    display: inline-flex;
-    gap: var(--space-2);
-    align-items: center;
-    padding: var(--space-1) var(--space-2);
-    font-size: var(--text-sm);
-    line-height: var(--leading-tight);
-    color: var(--color-text);
+  .tile {
+    display: grid;
+    gap: var(--space-1);
+    place-items: center;
+    padding: var(--tile-pad) 2px;
+    text-align: center;
     background-color: var(--color-bg);
     border: var(--border-width) solid var(--color-border);
     border-radius: var(--radius);
-    transition: border-color var(--duration-fast) var(--ease-out);
+    transition:
+      border-color var(--duration-fast) var(--ease-out),
+      background-color var(--duration-fast) var(--ease-out);
   }
 
-  .item :global(.brand-icon) {
-    color: var(--tone);
-  }
-
-  .item:hover {
+  .tile:hover {
+    background-color: color-mix(in srgb, var(--tone) 8%, var(--color-bg));
     border-color: var(--tone);
   }
 
-  /* Narrow panes: label above its chips. */
-  @container (max-width: 34rem) {
-    .group {
-      grid-template-columns: minmax(0, 1fr);
-      gap: var(--space-2);
+  .icon {
+    display: grid;
+    place-items: center;
+    font-size: var(--tile-icon);
+    line-height: 1;
+    color: var(--tone);
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+
+  .tile:hover .icon {
+    transform: translateY(-2px);
+  }
+
+  .name {
+    max-inline-size: 100%;
+    overflow: hidden;
+    font-size: 0.8125rem;
+    line-height: var(--leading-tight);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--color-text);
+  }
+
+  /* ---------- size steps ---------- */
+  /* Big screens (≥ 1200px wide and > 800px tall, e.g. 1920×1080): large tiles like the
+     reference site. */
+  @media (min-width: 75rem) and (min-height: 50.01rem) {
+    .skills {
+      --tile-icon: 1.625rem;
+      --tile-pad: var(--space-3);
+
+      gap: var(--space-4);
     }
 
-    .label {
-      padding-block-start: 0;
+    .group {
+      gap: var(--space-2);
+    }
+  }
+
+  /* Phones: tighter gaps so four tiles fit across. */
+  @media (max-width: 30rem) {
+    .skills {
+      --tile-gap: var(--space-1);
+    }
+  }
+
+  /* Short screens (≤ 688px tall, e.g. 1280×650, 1024×600): chips, icon left of the name. */
+  @media (max-height: 43rem) {
+    .skills {
+      --tile-min: 7.5rem;
+      --tile-icon: 1rem;
+      --tile-gap: var(--space-1) var(--space-2);
+
+      gap: var(--space-1);
+    }
+
+    .group {
+      gap: 2px;
+    }
+
+    .tile {
+      grid-auto-flow: column;
+      gap: var(--space-2);
+      justify-content: start;
+      padding: var(--space-1) var(--space-2);
+      text-align: start;
     }
   }
 </style>

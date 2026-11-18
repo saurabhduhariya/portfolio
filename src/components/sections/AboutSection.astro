@@ -1,13 +1,20 @@
 ---
-import FileText from '@lucide/astro/icons/file-text';
+// About: bio, a neofetch-style block (ASCII coffee mug + quick facts + status) and buttons.
+import LinkButton from '@/components/ui/LinkButton.astro';
 import type { Profile } from '@/data/types';
 
 interface Props {
   profile: Profile;
+  githubUrl: string | undefined;
 }
 
-const { profile } = Astro.props;
+const { profile, githubUrl } = Astro.props;
 const fetchTitle = `${profile.handle}@${profile.host}`;
+
+// Steam has two frames that swap (paused by reduced motion and the fx switch).
+const steamA = '   ( (\n    ) )';
+const steamB = '    ) )\n   ( (';
+const cup = ' ........\n |      |]\n \\      /\n  `----´';
 ---
 
 <div class="about">
@@ -15,93 +22,133 @@ const fetchTitle = `${profile.handle}@${profile.host}`;
     {profile.bio.map((paragraph) => (
       <p>{paragraph}</p>
     ))}
-
-    <div class="actions">
-      <a class="button primary" href={profile.resumeUrl} target="_blank" rel="noreferrer">
-        <FileText size="1em" aria-hidden="true" />
-        View resume
-        <span class="visually-hidden">(Google Drive, opens in a new tab)</span>
-      </a>
-      <a class="button" href="/projects/">
-        See my projects <span aria-hidden="true">→</span>
-      </a>
-    </div>
   </div>
 
   <section class="fetch" aria-labelledby="facts-heading">
-    <h2 id="facts-heading" class="fetch-title">
-      {fetchTitle}
-    </h2>
-    <p class="fetch-rule" aria-hidden="true">
-      {'-'.repeat(fetchTitle.length)}
-    </p>
-    <dl>
-      {profile.quickFacts.map((fact) => (
+    <div class="mug" aria-hidden="true">
+      <span class="steam">
+        <span class="steam-a">{steamA}</span>
+        <span class="steam-b">{steamB}</span>
+      </span>
+      <span class="cup">{cup}</span>
+      <span class="caption">coffee.exe</span>
+    </div>
+
+    <div class="facts">
+      <h2 id="facts-heading" class="fetch-title">
+        {fetchTitle}
+      </h2>
+      <p class="fetch-rule" aria-hidden="true">
+        {'-'.repeat(fetchTitle.length)}
+      </p>
+      <dl>
+        {profile.quickFacts.map((fact) => (
+          <div class="fact">
+            <dt>{fact.label}</dt>
+            <dd>{fact.value}</dd>
+          </div>
+        ))}
+        {profile.currently && (
+          <div class="fact">
+            <dt>currently</dt>
+            <dd>{profile.currently}</dd>
+          </div>
+        )}
         <div class="fact">
-          <dt>{fact.label}</dt>
-          <dd>{fact.value}</dd>
+          <dt>status</dt>
+          <dd class="status">
+            <span class="dot" aria-hidden="true"></span>
+            {profile.status}
+          </dd>
         </div>
-      ))}
-    </dl>
+      </dl>
+    </div>
   </section>
+
+  <div class="actions">
+    <LinkButton
+      href={profile.resumeUrl}
+      variant="primary"
+      srHint="(Google Drive, opens in a new tab)"
+    >
+      view resume
+    </LinkButton>
+    {githubUrl && <LinkButton href={githubUrl}>github</LinkButton>}
+    <LinkButton href="/projects/">projects</LinkButton>
+  </div>
 </div>
 
 <style>
   .about {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-6);
   }
 
   .bio {
     display: grid;
-    gap: var(--space-4);
+    gap: var(--space-3);
   }
 
   .actions {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-3);
-    margin-block-start: var(--space-2);
   }
 
-  .button {
-    display: inline-flex;
-    gap: var(--space-2);
-    align-items: center;
-    padding: var(--space-2) var(--space-4);
-    color: var(--color-text);
-    text-decoration: none;
-    border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius);
-    transition:
-      border-color var(--duration-fast) var(--ease-out),
-      color var(--duration-fast) var(--ease-out);
-  }
-
-  .button:hover {
-    color: var(--color-accent);
-    border-color: var(--color-accent);
-  }
-
-  .button.primary {
-    font-weight: var(--weight-bold);
-    color: var(--color-text-on-accent);
-    background-color: var(--color-accent);
-    border-color: var(--color-accent);
-  }
-
-  .button.primary:hover {
-    color: var(--color-text-on-accent);
-    background-color: var(--color-accent-strong);
-    border-color: var(--color-accent-strong);
-  }
-
+  /* ---------- neofetch block ---------- */
   .fetch {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+    align-items: center;
+    inline-size: fit-content;
+    max-inline-size: 100%;
     padding: var(--space-4) var(--space-6);
     background-color: var(--color-bg);
     border: var(--border-width) solid var(--color-border);
     border-radius: var(--radius);
+  }
+
+  .mug {
+    display: none;
+    line-height: 1.25;
+    white-space: pre;
+    color: var(--color-accent-strong);
+  }
+
+  /* The two steam frames sit on top of each other; only one is visible at a time. */
+  .steam {
+    display: grid;
+  }
+
+  .steam-a,
+  .steam-b {
+    grid-area: 1 / 1;
+  }
+
+  .steam-b {
+    opacity: 0;
+    animation: steam-b calc(var(--duration-frame) * 3) steps(1, end) infinite;
+  }
+
+  .steam-a {
+    animation: steam-a calc(var(--duration-frame) * 3) steps(1, end) infinite;
+  }
+
+  :global(:root[data-fx='off']) .steam-a,
+  :global(:root[data-fx='off']) .steam-b {
+    animation: none;
+  }
+
+  .cup {
+    display: block;
+  }
+
+  .caption {
+    display: block;
+    margin-block-start: var(--space-1);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
   }
 
   .fetch-title {
@@ -114,9 +161,14 @@ const fetchTitle = `${profile.handle}@${profile.host}`;
     color: var(--color-text-faint);
   }
 
+  dl {
+    display: grid;
+    gap: var(--space-1);
+  }
+
   .fact {
     display: grid;
-    grid-template-columns: 11ch minmax(0, 1fr);
+    grid-template-columns: 10ch minmax(0, 1fr);
     gap: var(--space-ch);
   }
 
@@ -134,22 +186,80 @@ const fetchTitle = `${profile.handle}@${profile.host}`;
     margin: 0;
   }
 
-  @media (min-width: 75rem) {
+  .status {
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+    font-weight: var(--weight-bold);
+    color: var(--color-success);
+  }
+
+  .dot {
+    flex-shrink: 0;
+    inline-size: 0.55rem;
+    block-size: 0.55rem;
+    background-color: currentColor;
+    border-radius: 50%;
+    box-shadow: 0 0 0 0.25rem color-mix(in srgb, currentColor 20%, transparent);
+  }
+
+  /* Wide and tall enough for mug + facts side by side. The mug is shorter than the facts, so
+     it never adds height; it is dropped only where the banner is plain text too. */
+  @media (min-width: 56.25rem) and (min-height: 40.01rem) {
+    .fetch {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .mug {
+      display: block;
+    }
+  }
+
+  /* Short screens (e.g. 1280×650): tighter rhythm so About fits without scrolling. */
+  @media (max-height: 46rem) {
     .about {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
-      align-items: start;
+      gap: var(--space-4);
+    }
+
+    .bio {
+      gap: var(--space-2);
+    }
+
+    .fetch {
+      padding-block: var(--space-3);
+    }
+
+    .fetch-rule {
+      display: none;
+    }
+
+    dl {
+      gap: 0;
     }
   }
 
   @media (max-width: 30rem) {
     .fetch {
+      inline-size: auto;
       padding: var(--space-3) var(--space-4);
     }
 
     .fact {
       grid-template-columns: minmax(0, 1fr);
       gap: 0;
-      margin-block-end: var(--space-2);
+      margin-block-end: var(--space-1);
+    }
+  }
+
+  @keyframes steam-a {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes steam-b {
+    50% {
+      opacity: 1;
     }
   }
 </style>

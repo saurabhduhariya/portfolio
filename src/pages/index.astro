@@ -1,9 +1,12 @@
 ---
 import AboutSection from '@/components/sections/AboutSection.astro';
+import { contacts } from '@/data/contacts';
 import { profile } from '@/data/profile';
 import ShellLayout from '@/layouts/ShellLayout.astro';
+
+const githubUrl = contacts.find((contact) => contact.icon === 'github')?.url;
 ---
 
 <ShellLayout navId="about">
-  <AboutSection profile={profile} />
+  <AboutSection profile={profile} githubUrl={githubUrl} />
 </ShellLayout>

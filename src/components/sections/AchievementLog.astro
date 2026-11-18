@@ -1,5 +1,7 @@
 ---
-// Achievements rendered like `git log --graph`.
+// Achievements rendered like `git log --graph`: each commit gets its own graph colour, every
+// title uses the same style, and linked titles end in "↗".
+import OutLink from '@/components/ui/OutLink.astro';
 import type { Achievement } from '@/data/types';
 import { shortHash } from '@/lib/hash';
 
@@ -8,11 +10,14 @@ interface Props {
 }
 
 const { entries } = Astro.props;
+
+// Semantic theme tokens, cycled per commit. All pass AA on --color-surface.
+const tones = ['accent', 'info', 'success', 'tag'] as const;
 ---
 
 <ol class="log" role="list">
   {entries.map((entry, index) => (
-    <li class="commit">
+    <li class="commit" style={`--tone: var(--color-${tones[index % tones.length]})`}>
       <span class="graph" aria-hidden="true">
         *
       </span>
@@ -27,13 +32,7 @@ const { entries } = Astro.props;
             </span>
           )}
           <span class="title">
-            {entry.url ? (
-              <a href={entry.url} target="_blank" rel="noreferrer">
-                {entry.title}
-              </a>
-            ) : (
-              entry.title
-            )}
+            {entry.url ? <OutLink href={entry.url}>{entry.title}</OutLink> : entry.title}
           </span>
           {entry.date && <span class="date">{entry.date}</span>}
         </p>
@@ -54,22 +53,23 @@ const { entries } = Astro.props;
 
   .commit {
     display: grid;
-    grid-template-columns: 2ch minmax(0, 1fr);
+    grid-template-columns: 2.5ch minmax(0, 1fr);
   }
 
   .graph {
     position: relative;
-    font-weight: var(--weight-bold);
-    color: var(--color-accent);
+    font-weight: var(--weight-heavy);
+    color: var(--tone);
   }
 
-  /* The vertical "|" line that joins commits. */
+  /* The vertical line that joins this commit to the next one, in this commit's colour. */
   .graph::after {
     position: absolute;
     inset-block: calc(var(--leading-body) * 1em) 0;
     inset-inline-start: 0.3ch;
     content: '';
-    border-inline-start: var(--border-width) solid var(--color-border);
+    border-inline-start: calc(var(--border-width) * 2) solid
+      color-mix(in srgb, var(--tone) 55%, transparent);
   }
 
   .commit:last-child .graph::after {
@@ -77,7 +77,7 @@ const { entries } = Astro.props;
   }
 
   .body {
-    padding-block-end: var(--space-6);
+    padding-block-end: var(--space-8);
   }
 
   .line {
@@ -88,7 +88,7 @@ const { entries } = Astro.props;
   }
 
   .hash {
-    color: var(--color-accent);
+    color: var(--tone);
   }
 
   .ref {
@@ -97,7 +97,8 @@ const { entries } = Astro.props;
   }
 
   .title {
-    font-weight: var(--weight-semibold);
+    font-weight: var(--weight-bold);
+    color: var(--color-text);
   }
 
   .date {
@@ -113,10 +114,5 @@ const { entries } = Astro.props;
     gap: var(--space-1);
     margin-block-start: var(--space-2);
     color: var(--color-text-muted);
-  }
-
-  .detail li::before {
-    content: '  ';
-    white-space: pre;
   }
 </style>

@@ -1,5 +1,7 @@
 ---
-// Hobbies as compact rows: name, a small frequency meter and a one-line description.
+// Hobbies as compact rows of equal height: name, a frequency meter and a one-line description
+// (truncated with "…"; the full text is in the tooltip).
+import OutLink from '@/components/ui/OutLink.astro';
 import type { Hobby } from '@/data/types';
 
 interface Props {
@@ -16,14 +18,7 @@ const filled: Record<Hobby['frequency'], number> = { daily: 5, often: 3, sometim
   {hobbies.map((hobby) => (
     <li class:list={['hobby', `is-${hobby.frequency}`]}>
       <p class="name">
-        {hobby.url ? (
-          <a href={hobby.url} target="_blank" rel="noreferrer">
-            {hobby.name}
-            <span class="visually-hidden">(opens in a new tab)</span>
-          </a>
-        ) : (
-          hobby.name
-        )}
+        {hobby.url ? <OutLink href={hobby.url}>{hobby.name}</OutLink> : hobby.name}
       </p>
       <p class="frequency">
         <span class="meter" aria-hidden="true">
@@ -33,7 +28,9 @@ const filled: Record<Hobby['frequency'], number> = { daily: 5, often: 3, sometim
         </span>
         <span class="label">{hobby.frequency}</span>
       </p>
-      <p class="description">{hobby.description}</p>
+      <p class="description" title={hobby.description}>
+        {hobby.description}
+      </p>
     </li>
   ))}
 </ul>
@@ -42,14 +39,15 @@ const filled: Record<Hobby['frequency'], number> = { daily: 5, often: 3, sometim
   .hobbies {
     display: grid;
     gap: var(--space-2);
+    container-type: inline-size;
   }
 
   .hobby {
     --level-color: var(--color-text-muted);
 
     display: grid;
-    grid-template-columns: 14ch 16ch minmax(0, 1fr);
-    gap: var(--space-4);
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-1) var(--space-4);
     align-items: center;
     padding: var(--space-3) var(--space-4);
     background-color: var(--color-bg);
@@ -74,10 +72,7 @@ const filled: Record<Hobby['frequency'], number> = { daily: 5, often: 3, sometim
   .name {
     font-weight: var(--weight-bold);
     color: var(--color-text);
-  }
-
-  .name a {
-    color: var(--color-accent);
+    white-space: nowrap;
   }
 
   .frequency {
@@ -102,25 +97,40 @@ const filled: Record<Hobby['frequency'], number> = { daily: 5, often: 3, sometim
     background-color: var(--level-color);
   }
 
+  /* Fixed width so every meter lines up, whatever the label. */
   .label {
+    min-inline-size: 9ch;
     font-size: var(--text-sm);
     color: var(--level-color);
   }
 
+  /* One line in every layout, so all rows have the same height. */
   .description {
+    grid-column: 1 / -1;
+    max-inline-size: none;
+    overflow: hidden;
+    font-size: var(--text-sm);
+    white-space: nowrap;
+    text-overflow: ellipsis;
     color: var(--color-text-muted);
   }
 
-  /* Narrow panes: name + meter on one line, description underneath. */
-  @media (max-width: 75rem) {
+  @media (max-height: 40rem) {
     .hobby {
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: var(--space-1) var(--space-4);
+      padding-block: var(--space-2);
+    }
+  }
+
+  /* Wide panes: name | meter | description on one line. */
+  @container (min-width: 44rem) {
+    .hobby {
+      grid-template-columns: 16ch auto minmax(0, 1fr);
+      gap: var(--space-6);
     }
 
     .description {
-      grid-column: 1 / -1;
-      font-size: var(--text-sm);
+      grid-column: auto;
+      font-size: var(--text-base);
     }
   }
 </style>
