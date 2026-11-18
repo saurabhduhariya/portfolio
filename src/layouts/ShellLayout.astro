@@ -293,7 +293,7 @@ const profileUrls = contacts
     }
 
     .panes {
-      grid-template-columns: minmax(var(--sidebar-min), var(--sidebar-max)) minmax(0, 1fr);
+      grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
       padding-block: var(--space-4);
     }
 
@@ -304,7 +304,7 @@ const profileUrls = contacts
     }
 
     .content {
-      padding: var(--space-2) var(--space-8);
+      padding: var(--space-2) var(--content-pad-inline);
     }
   }
 
@@ -319,6 +319,12 @@ const profileUrls = contacts
   }
 
   /* Short desktop screens: tighter vertical rhythm so the panes keep their height. */
+  @media (min-width: 56.25rem) and (max-height: 46rem) {
+    .panes {
+      padding-block: var(--space-3);
+    }
+  }
+
   @media (min-width: 56.25rem) and (max-height: 40rem) {
     .panes {
       padding-block: var(--space-2);

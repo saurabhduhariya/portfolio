@@ -211,6 +211,36 @@ const number = String(index + 1).padStart(2, '0');
     }
   }
 
+  /* Small desktops (900-1000px wide): the pane is too narrow for side by side, so the view
+     stacks like on phones, but the frame shrinks so the project still fits without scrolling. */
+  @media (min-width: 56.25rem) {
+    @container (max-width: 35.99rem) {
+      .layout {
+        flex: 1 1 auto;
+        grid-template-rows: minmax(0, auto) auto;
+        align-content: start;
+        min-block-size: 0;
+      }
+
+      .body {
+        grid-template-rows: minmax(0, 1fr) auto;
+        min-block-size: 0;
+      }
+
+      .frame {
+        display: flex;
+        flex-direction: column;
+        max-block-size: 100%;
+        min-block-size: 0;
+      }
+
+      .shot {
+        flex: 1 1 auto;
+        min-block-size: 0;
+      }
+    }
+  }
+
   /* ---------- screenshot frame ---------- */
   .frame {
     margin: 0;

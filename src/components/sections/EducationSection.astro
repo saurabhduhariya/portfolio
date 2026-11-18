@@ -82,9 +82,11 @@ const details = [
     border-radius: var(--radius);
   }
 
+  /* Tight leading: the long school name wraps onto two lines on narrower panes. */
   .school {
     font-size: var(--text-lg);
     font-weight: var(--weight-bold);
+    line-height: var(--leading-tight);
   }
 
   dl {
@@ -166,8 +168,10 @@ const details = [
     }
   }
 
-  /* Short screens: tighter rhythm so the page fits without scrolling. */
-  @media (max-height: 46rem) {
+  /* Short screens, and small desktops (900-1199px wide) up to 832px tall where the school
+     name, degree and course names wrap onto extra lines: tighter rhythm so the page fits. */
+  @media (max-height: 46rem),
+    (min-width: 56.25rem) and (max-width: 74.99rem) and (max-height: 52rem) {
     .education {
       gap: var(--space-4);
     }
@@ -180,6 +184,15 @@ const details = [
     dl,
     .courses {
       row-gap: var(--space-1);
+    }
+  }
+
+  /* Small desktops: the course columns are narrow, so the names drop to 14px and the longest
+     ("Computer Architecture & Organization") still fits on one line at 1024px wide. */
+  @media (min-width: 56.25rem) and (max-width: 74.99rem) and (max-height: 52rem) {
+    .courses {
+      column-gap: var(--space-6);
+      font-size: var(--text-sm);
     }
   }
 

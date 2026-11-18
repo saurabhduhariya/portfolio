@@ -44,8 +44,10 @@
 
   /* layout */
   --shell-max: 80rem; /* 1280px, max width of the window */
-  --sidebar-min: 14rem;
-  --sidebar-max: 18rem;
+  /* File tree column: 240px on small desktops (fits "├── achievements.log ◂"), 288px from
+     ~1310px wide, so narrow windows give the extra width to the content pane. */
+  --sidebar-width: clamp(15rem, 22vw, 18rem);
+  --content-pad-inline: clamp(var(--space-6), 2.5vw, var(--space-8)); /* 24-32px */
 
   /* frameless shell (design v2): no window box, the screen is the terminal */
   --shell-gutter: clamp(0px, 3vw, 3rem); /* left/right space around the centred column */

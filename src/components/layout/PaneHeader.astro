@@ -80,6 +80,13 @@ const { user, command, title } = Astro.props;
     line-height: var(--leading-tight);
   }
 
+  /* Short screens: less space under the heading, so the section keeps its height. */
+  @media (max-height: 46rem) {
+    .pane-header {
+      margin-block-end: var(--space-4);
+    }
+  }
+
   @keyframes blink {
     50% {
       opacity: 0;

@@ -5,7 +5,8 @@
 //    so the page is colourful but stays inside the theme. Black/white logos use the text colour.
 //  - Skills without a brand logo get a matching Lucide glyph.
 //  - Compact tiles by default, large tiles on big screens, chips (icon left of the name) on
-//    short screens, so the page fits without scrolling on laptops and tablets.
+//    short screens and small desktops, so the page fits without scrolling on laptops and
+//    tablets (sizes per screen: docs/DECISIONS.md D-032).
 //  - Tile labels are 13px (an exception to the 14px minimum, see docs/DESIGN_SYSTEM.md) so the
 //    longest names ("JavaScript", "PostgreSQL") fit a tile without being cut.
 import ArrowLeftRight from '@lucide/astro/icons/arrow-left-right';
@@ -85,10 +86,11 @@ function toneOf(icon: string | undefined, glyph: SkillGlyph | undefined): Tone {
 </div>
 
 <style>
-  /* Default: compact tiles (laptops ≤ 800px tall, tablets, phones). */
+  /* Default: compact tiles (laptops under 1000px tall, tablets, phones). */
   .skills {
     --tile-min: 5.25rem;
     --tile-icon: 1.25rem;
+    --tile-label: 0.8125rem; /* 13px, see the note at the top */
     --tile-pad: var(--space-1);
     --tile-gap: var(--space-2);
 
@@ -134,17 +136,11 @@ function toneOf(icon: string | undefined, glyph: SkillGlyph | undefined): Tone {
     place-items: center;
     padding: var(--tile-pad) 2px;
     text-align: center;
-    background-color: var(--color-bg);
-    border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius);
-    transition:
-      border-color var(--duration-fast) var(--ease-out),
-      background-color var(--duration-fast) var(--ease-out);
   }
 
-  .tile:hover {
-    background-color: color-mix(in srgb, var(--tone) 8%, var(--color-bg));
-    border-color: var(--tone);
+  /* No box around a tile: on hover the name takes the logo's colour (and the icon lifts). */
+  .tile:hover .name {
+    color: var(--tone);
   }
 
   .icon {
@@ -163,19 +159,25 @@ function toneOf(icon: string | undefined, glyph: SkillGlyph | undefined): Tone {
   .name {
     max-inline-size: 100%;
     overflow: hidden;
-    font-size: 0.8125rem;
+    font-size: var(--tile-label);
     line-height: var(--leading-tight);
     text-overflow: ellipsis;
     white-space: nowrap;
     color: var(--color-text);
+    transition: color var(--duration-fast) var(--ease-out);
   }
 
   /* ---------- size steps ---------- */
-  /* Big screens (≥ 1200px wide and > 800px tall, e.g. 1920×1080): large tiles like the
-     reference site. */
-  @media (min-width: 75rem) and (min-height: 50.01rem) {
+  /* Big screens (≥ 1200px wide and ≥ 1000px tall, e.g. 1920×1080 full screen): large tiles
+     like the reference site. Below 1000px tall (1536×864, 1600×900, browser windows with
+     toolbars) the large tiles would not fit, so the compact ones stay. */
+  @media (min-width: 75rem) and (min-height: 62.5rem) {
+    /* 30px icons and 14px names. Columns are 92px so "JavaScript" fits; that still gives 9 per
+       row, so the biggest group stays on one line. */
     .skills {
-      --tile-icon: 1.625rem;
+      --tile-min: 5.75rem;
+      --tile-icon: 1.875rem;
+      --tile-label: var(--text-sm);
       --tile-pad: var(--space-3);
 
       gap: var(--space-4);
@@ -193,11 +195,16 @@ function toneOf(icon: string | undefined, glyph: SkillGlyph | undefined): Tone {
     }
   }
 
-  /* Short screens (≤ 688px tall, e.g. 1280×650, 1024×600): chips, icon left of the name. */
-  @media (max-height: 43rem) {
+  /* Chips (icon left of the name, half the height of a tile):
+      - short screens (≤ 736px tall, e.g. 1366×657 browser window, 1280×650, 1024×600);
+      - small desktops (900-1199px wide) up to 920px tall: the pane has room for only 6-8 tiles
+        per row there, so the groups wrap onto more rows than the screen can hold.
+     The 14px icon matches the 13px label, so a chip row is only as tall as the text. */
+  @media (max-height: 46rem),
+    (min-width: 56.25rem) and (max-width: 74.99rem) and (max-height: 57.5rem) {
     .skills {
       --tile-min: 7.5rem;
-      --tile-icon: 1rem;
+      --tile-icon: 0.875rem;
       --tile-gap: var(--space-1) var(--space-2);
 
       gap: var(--space-1);

@@ -115,8 +115,14 @@ const filled: Record<Hobby['frequency'], number> = { daily: 5, often: 3, sometim
     color: var(--color-text-muted);
   }
 
-  @media (max-height: 40rem) {
+  /* Short screens (≤ 736px tall): slimmer rows so all five fit without scrolling. */
+  @media (max-height: 46rem) {
+    .hobbies {
+      gap: var(--space-1);
+    }
+
     .hobby {
+      row-gap: 0;
       padding-block: var(--space-2);
     }
   }
