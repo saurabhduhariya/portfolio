@@ -10,6 +10,8 @@
 }
 
 html {
+  /* Percentage of the browser's font size, so a visitor's own font setting still applies. */
+  font-size: var(--root-size);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }

@@ -8,6 +8,10 @@
  *   --bp-small    30rem    (480px)  tighter padding
  */
 :root {
+  /* page scale: the root font size, so every rem size follows it. 100% of the visitor's browser
+     font size on phones and tablets; 90% on desktop (see the media query at the bottom). */
+  --root-size: 100%;
+
   /* type */
   --font-mono:
     'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
@@ -40,7 +44,7 @@
   /* shape */
   --border-width: 1px;
   --focus-width: 2px;
-  --radius: 6px;
+  --radius: 0.375rem; /* 6px at 100% */
 
   /* layout */
   --shell-max: 80rem; /* 1280px, max width of the window */
@@ -72,13 +76,22 @@
 
   /* background effects */
   --grain-opacity: 0.05;
-  --dot-gap: 24px;
+  --dot-gap: 1.5rem; /* 24px at 100% */
 
   /* banner: fixed height (width follows from the art), so it never stretches across the page */
   --banner-height: clamp(2.5rem, 10dvh, 5rem); /* one line: 40-80px tall, ~420-840px wide */
   --banner-height-stacked: clamp(4.5rem, 12dvh, 6rem); /* two lines on phones: 72-96px */
   /* Space above the banner: grows a little on tall screens (24px → 40px at 1080px tall). */
   --banner-gap-top: clamp(var(--space-6), 4dvh, 2.5rem);
+}
+
+/* Desktop renders at 90%: the same as 90% browser zoom at the default 100% (D-037). Media
+   queries always use the browser's base size, so breakpoints stay at the same window sizes.
+   Phones and tablets keep 100% for readability. */
+@media (min-width: 56.25rem) {
+  :root {
+    --root-size: 90%;
+  }
 }
 
 /* Below the desktop breakpoint everything runs edge to edge. */
