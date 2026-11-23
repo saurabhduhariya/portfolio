@@ -7,7 +7,8 @@ import type { Contact } from '@/data/types';
 interface Props {
   intro: string;
   contacts: readonly Contact[];
-  status: string;
+  /** Hidden if unset. */
+  status?: string | undefined;
 }
 
 const { intro, contacts, status } = Astro.props;
@@ -15,10 +16,12 @@ const { intro, contacts, status } = Astro.props;
 
 <div class="contact">
   <div class="lead">
-    <p class="status">
-      <span class="dot" aria-hidden="true"></span>
-      {status}
-    </p>
+    {status && (
+      <p class="status">
+        <span class="dot" aria-hidden="true" />
+        {status}
+      </p>
+    )}
     <p>{intro}</p>
   </div>
   <ul class="list" role="list">

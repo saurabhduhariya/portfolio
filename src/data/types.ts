@@ -40,8 +40,9 @@ export interface Profile {
     location: string;
     coursework: string[];
   };
-  /** Short availability line, e.g. "open to internships". Sidebar footer, About, Contact. */
-  status: string;
+  /** Short availability line, e.g. "open to internships". Sidebar footer, About, Contact.
+   *  Hidden everywhere if unset. */
+  status?: string | undefined;
   /** Optional "currently …" line in the About facts, e.g. "building a CLI for X". Hidden if unset. */
   currently?: string;
   /** Public Google Drive "view" link to the resume PDF. */
@@ -100,12 +101,12 @@ export interface Achievement {
 export interface Hobby {
   name: string;
   /** How often; drives the meter bar and the label. */
-  frequency: 'daily' | 'often' | 'sometimes';
+  frequency: 'daily' | 'regularly' | 'often' | 'sometimes';
   description: string;
   url?: string;
 }
 
-export type ContactIcon = 'mail' | 'github' | 'linkedin';
+export type ContactIcon = 'mail' | 'github' | 'linkedin' | 'x' | 'leetcode';
 
 export interface Contact {
   label: string;

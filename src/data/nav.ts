@@ -10,7 +10,7 @@ export const navItems: NavItem[] = [
     command: 'cat about.md',
     title: 'About me',
     description:
-      'Saurabh Prajapat, CS undergrad at IIT (ISM) Dhanbad who builds developer tools and AI agents.',
+      'Saurabh Prajapat, CS undergrad at IIT (ISM) Dhanbad who builds developer tools, AI agents and machine learning models.',
   },
   {
     id: 'education',

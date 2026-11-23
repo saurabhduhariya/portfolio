@@ -54,13 +54,15 @@ const cup = ' ........\n |      |]\n \\      /\n  `----´';
             <dd>{profile.currently}</dd>
           </div>
         )}
-        <div class="fact">
-          <dt>status</dt>
-          <dd class="status">
-            <span class="dot" aria-hidden="true"></span>
-            {profile.status}
-          </dd>
-        </div>
+        {profile.status && (
+          <div class="fact">
+            <dt>status</dt>
+            <dd class="status">
+              <span class="dot" aria-hidden="true" />
+              {profile.status}
+            </dd>
+          </div>
+        )}
       </dl>
     </div>
   </section>

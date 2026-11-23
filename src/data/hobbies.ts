@@ -9,8 +9,12 @@ export const hobbies: Hobby[] = [
     description: 'Building side projects and solving problems on LeetCode and Codeforces',
     url: 'https://github.com/saurabhduhariya',
   },
-  { name: 'hackathons', frequency: 'often', description: 'Shipping something new in a weekend' },
+  {
+    name: 'hackathons',
+    frequency: 'regularly',
+    description: 'Shipping something new in a weekend',
+  },
+  { name: 'cricket', frequency: 'often', description: 'Weekend matches with friends' },
   { name: 'chess', frequency: 'often', description: 'Over the board and online' },
-  { name: 'cricket', frequency: 'sometimes', description: 'Weekend matches with friends' },
   { name: 'table tennis', frequency: 'sometimes', description: 'Quick rallies between classes' },
 ];

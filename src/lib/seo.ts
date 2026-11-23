@@ -24,7 +24,7 @@ export function buildSeo({ pageTitle, description, pathname, site, profile }: Se
   return { title, description, canonical };
 }
 
-/** schema.org Person block for the home page. `sameAs` lists profile URLs (GitHub, LinkedIn). */
+/** schema.org Person block for the home page. `sameAs` lists profile URLs (GitHub, LinkedIn, LeetCode, X). */
 export function personJsonLd(profile: Profile, site: URL | undefined, sameAs: string[]): string {
   const data = {
     '@context': 'https://schema.org',

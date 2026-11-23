@@ -5,7 +5,7 @@ export const profile: Profile = {
   name: 'Saurabh Prajapat',
   handle: 'saurabh',
   host: 'portfolio',
-  tagline: 'CS undergrad @ IIT (ISM) Dhanbad · developer tools & AI agents',
+  tagline: 'CS undergrad @ IIT (ISM) Dhanbad · developer tools, AI agents & ML',
   bio: [
     "Hi! I'm Saurabh, a CS undergrad at IIT (ISM) Dhanbad. I build developer tools, AI agents and machine learning models.",
     'Off the keyboard: chess, cricket and table tennis.',
@@ -33,7 +33,8 @@ export const profile: Profile = {
       'Probability & Statistics',
     ],
   },
-  status: 'open to internships',
+  // Availability line (sidebar footer, About, Contact). Hidden while commented out.
+  // status: 'open to internships',
   // Update the file in Drive with "Manage versions → Upload new version" so this link never changes.
   resumeUrl: 'https://drive.google.com/file/d/1KqjNzUZSqaG8jRm_KABIp0EK9hKmcjic/view?usp=sharing',
 };

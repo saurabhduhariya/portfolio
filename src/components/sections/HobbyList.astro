@@ -11,7 +11,12 @@ interface Props {
 const { hobbies } = Astro.props;
 
 const SEGMENTS = 5;
-const filled: Record<Hobby['frequency'], number> = { daily: 5, often: 3, sometimes: 2 };
+const filled: Record<Hobby['frequency'], number> = {
+  daily: 5,
+  regularly: 4,
+  often: 3,
+  sometimes: 2,
+};
 ---
 
 <ul class="hobbies" role="list">
@@ -65,6 +70,7 @@ const filled: Record<Hobby['frequency'], number> = { daily: 5, often: 3, sometim
     --level-color: var(--color-success);
   }
 
+  .is-regularly,
   .is-often {
     --level-color: var(--color-info);
   }
