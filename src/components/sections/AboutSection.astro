@@ -86,9 +86,14 @@ const cup = ' ........\n |      |]\n \\      /\n  `----´';
     gap: var(--space-6);
   }
 
+  /* Bio and the neofetch block use the full pane width, so wide screens have no empty right half. */
   .bio {
     display: grid;
     gap: var(--space-3);
+  }
+
+  .bio p {
+    max-inline-size: none;
   }
 
   .actions {
@@ -103,8 +108,6 @@ const cup = ' ........\n |      |]\n \\      /\n  `----´';
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-8);
     align-items: center;
-    inline-size: fit-content;
-    max-inline-size: 100%;
     padding: var(--space-4) var(--space-6);
     background-color: var(--color-bg);
     border: var(--border-width) solid var(--color-border);
