@@ -156,9 +156,10 @@ const number = String(index + 1).padStart(2, '0');
     gap: var(--space-4);
   }
 
-  /* Phones: a wider, shorter frame and no bullet points, so one project fits the screen. */
+  /* 16:9 like a 1920×1080 screenshot, so full-screen captures show uncropped.
+     Phones: no bullet points, so one project fits the screen. */
   .shot {
-    aspect-ratio: 2 / 1;
+    aspect-ratio: 16 / 9;
   }
 
   .points {
@@ -167,10 +168,6 @@ const number = String(index + 1).padStart(2, '0');
 
   /* ---------- wide: side by side, exactly one screen tall ---------- */
   @container (min-width: 36rem) {
-    .shot {
-      aspect-ratio: 16 / 10;
-    }
-
     .points {
       display: grid;
     }
@@ -193,7 +190,7 @@ const number = String(index + 1).padStart(2, '0');
       min-block-size: 0;
     }
 
-    /* Keeps its 16:10 shape but never grows taller than the space left. */
+    /* Keeps its 16:9 shape but never grows taller than the space left. */
     .frame {
       display: flex;
       flex-direction: column;
@@ -364,7 +361,7 @@ const number = String(index + 1).padStart(2, '0');
   /* ---------- pager ---------- */
   .pager {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     gap: var(--space-4);
     align-items: center;
     padding-block-start: var(--space-3);
@@ -377,7 +374,16 @@ const number = String(index + 1).padStart(2, '0');
     gap: var(--space-2);
     align-items: center;
     justify-self: start;
+    max-inline-size: 100%;
     text-decoration: none;
+  }
+
+  /* One line always, so every project's pager is the same height ("Amazon ML Challenge" is long). */
+  .step-name {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .step.next {
@@ -447,7 +453,8 @@ const number = String(index + 1).padStart(2, '0');
     border-radius: var(--radius);
   }
 
-  @container (max-width: 28rem) {
+  /* Narrow panes (phones, 900-1000px wide windows): the 9 dots take the middle, arrows only. */
+  @container (max-width: 40rem) {
     .step-name {
       display: none;
     }
