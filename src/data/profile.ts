@@ -7,13 +7,13 @@ export const profile: Profile = {
   host: 'portfolio',
   tagline: 'CS undergrad @ IIT (ISM) Dhanbad · developer tools & AI agents',
   bio: [
-    "Hi! I'm Saurabh, a CS undergrad at IIT (ISM) Dhanbad. I build developer tools and AI agents.",
+    "Hi! I'm Saurabh, a CS undergrad at IIT (ISM) Dhanbad. I build developer tools, AI agents and machine learning models.",
     'Off the keyboard: chess, cricket and table tennis.',
   ],
   quickFacts: [
     { label: 'college', value: 'IIT (ISM) Dhanbad' },
     { label: 'location', value: 'Dhanbad, Jharkhand' },
-    { label: 'focus', value: 'developer tools, AI agents, backend' },
+    { label: 'focus', value: 'dev tools, AI agents, ML, backend' },
     { label: 'problems', value: '1000+ solved (LeetCode, Codeforces)' },
   ],
   education: {
