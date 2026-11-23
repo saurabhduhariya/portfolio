@@ -8,7 +8,8 @@ interface Props {
   currentId: string | undefined;
   rootLabel: string;
   projectCount: number;
-  status: string;
+  /** Hidden if unset. */
+  status?: string | undefined;
 }
 
 const { items, currentId, rootLabel, projectCount, status } = Astro.props;
@@ -21,10 +22,12 @@ const summary = `${items.length} entries · ${projectCount} project${projectCoun
     <p class="summary" aria-hidden="true">
       {summary}
     </p>
-    <p class="status">
-      <span class="pulse" aria-hidden="true"></span>
-      {status}
-    </p>
+    {status && (
+      <p class="status">
+        <span class="pulse" aria-hidden="true" />
+        {status}
+      </p>
+    )}
   </footer>
 </div>
 

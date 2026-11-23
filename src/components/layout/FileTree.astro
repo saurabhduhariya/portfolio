@@ -27,9 +27,7 @@ const lastIndex = items.length - 1;
             data-nav-order={index + 1}
             aria-current={isCurrent ? 'page' : undefined}
           >
-            <span class="branch" aria-hidden="true">
-              {index === lastIndex ? '└──' : '├──'}
-            </span>
+            <span class:list={['branch', { last: index === lastIndex }]} aria-hidden="true" />
             <span class="label">{item.label}</span>
             <span class="marker" aria-hidden="true">
               ◂
@@ -49,9 +47,9 @@ const lastIndex = items.length - 1;
     color: var(--color-info);
   }
 
+  /* No gap between rows, so the tree's vertical line runs unbroken from row to row. */
   ul {
     display: grid;
-    gap: 2px;
   }
 
   .item {
@@ -64,18 +62,49 @@ const lastIndex = items.length - 1;
     color: var(--color-text);
     text-decoration: none;
     border-radius: var(--radius);
-    transition:
-      background-color var(--duration-fast) var(--ease-out),
-      color var(--duration-fast) var(--ease-out);
+    transition: color var(--duration-fast) var(--ease-out);
   }
 
   .item.directory {
     color: var(--color-info);
   }
 
+  /* "├──" / "└──" drawn with borders instead of box-drawing characters: the characters stop at
+     the text's height, which left a gap in the vertical line between rows. Here the vertical
+     line spans the whole row (half of it on the last row) and the first one reaches up to the
+     "~/saurabh" root. Same 3ch + 1ch space as the old "├── " text, so labels do not move. */
   .branch {
+    position: relative;
+    flex-shrink: 0;
+    align-self: stretch;
+    inline-size: 3ch;
     margin-inline-end: var(--space-ch);
-    color: var(--color-text-faint);
+  }
+
+  .branch::before,
+  .branch::after {
+    position: absolute;
+    inset-inline-start: 0.5ch;
+    content: '';
+  }
+
+  .branch::before {
+    inset-block: 0;
+    border-inline-start: var(--border-width) solid var(--color-text-faint);
+  }
+
+  li:first-child .branch::before {
+    inset-block-start: calc(var(--space-2) * -1);
+  }
+
+  .branch.last::before {
+    inset-block-end: 50%;
+  }
+
+  .branch::after {
+    inset-block-start: 50%;
+    inset-inline-end: 0;
+    border-block-start: var(--border-width) solid var(--color-text-faint);
   }
 
   .label {
@@ -89,15 +118,15 @@ const lastIndex = items.length - 1;
     visibility: hidden;
   }
 
+  /* No highlight box: hover and the current page only change the text colour; the current
+     page also shows the ◂ marker. */
   .item:hover {
     color: var(--color-accent);
-    background-color: var(--color-surface-raised);
   }
 
   .item.current {
     font-weight: var(--weight-bold);
     color: var(--color-accent);
-    background-color: var(--color-surface-raised);
   }
 
   .item.current .marker {
